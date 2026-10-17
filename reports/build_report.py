@@ -194,9 +194,9 @@ def build():
         f"also hand out {money(combo_disc)} a year in discounts.",
         f"<b>Why it is worth doing.</b> After staff time the base case nets about {money(base_net)} a year, about 4.6% on top of "
         "the three branches' current gross profit, with no new hardware and no discounts. A $3k POS integration would pay back "
-        "in about two months, and the engine stays silent wherever a suggestion would not pay. Anchored in measured margins, "
-        "each 1% of half-orders turned into pairs is worth about $1.7k a year; the pilot measures the real rate before any "
-        "money is spent on rollout.",
+        "in about two months, and the engine stays silent wherever a suggestion would not pay. The profit pool is about $174k "
+        "a year (every half-order paired, at measured margins); the base case claims about 10% of it, and each extra point "
+        "of acceptance adds about $2.65k. The pilot measures the real rate before any money is spent on rollout.",
         f"<b>Learning.</b> The v2 engine (Thompson-sampling bandit) earns about {money(v2y)} vs {money(v1y)} for v1 in its first "
         "year across 30 simulated customer truths, and beats the best-seller rule and classic combo in all of them.",
         "<b>Next step.</b> Two weeks of accept/decline logging, then a six-week odd/even receipt A/B test, measure the one "
@@ -363,6 +363,14 @@ def build():
             "(a lemonade for a peach iced tea). Scored with the April–June engine, the three-month-old playbook keeps "
             f"<b>{vs['Value kept by a 3-month-old playbook']}</b> of the value. The engine tracks stable behaviour rather than "
             "noise, and a monthly refresh is more than enough.")]
+    s += [P("<b>How to read the value.</b> The baseline is today: no suggestion at the till. Against it the value has three "
+            "layers. Making a suggestion at all (best-seller rule) is worth about $14.6k a year; choosing the item by branch "
+            "profit (v1) adds $2.2k (+15%) for $16.8k; learning real take rates (v2) raises the edge over the best-seller rule "
+            "from +20% (v1) to +53% in the section-6 simulation. v1's day-one edge is modest by construction: the base "
+            "assumption ties acceptance to organic popularity, which favours best-sellers, so v1 can only win on margin. "
+            "The ceiling is far higher than the base case: about 49,000 half-orders a year at $3.55 each is a $174k pool, and "
+            "value rises by about $2,650 per point of acceptance (3% → $8.9k, 6% → $16.8k, 12% → $33.1k). We keep 6% as the "
+            "base because no Stories data supports more; the pilot measures it.")]
     s += [PageBreak()]
 
     # ---------------- 7. Learning engine ----------------

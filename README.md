@@ -85,6 +85,20 @@ Engine trained on Jan–May, replayed on all 6,906 June orders, scaled to a year
 - The classic combo only catches up if 10% off lifts acceptance by +40–50%, far beyond anything in the data.
 - These are **gross-profit** figures: they exclude staff time, waste and POS integration cost.
 
+### How to read the value
+
+The baseline is **today: no suggestion at the till**. Measured against it, the value has three layers:
+
+| Layer | Extra gross profit / yr | Source |
+|---|---:|---|
+| Making a suggestion at all (best-seller rule) | $14.6k | June replay, base assumptions ([05](notebooks/05_value_and_pilot.ipynb)) |
+| Choosing the item by branch profit (Stories Pair v1) | +$2.2k (+15%) → **$16.8k** | June replay ([05](notebooks/05_value_and_pilot.ipynb)) |
+| Learning real take rates (Stories Pair v2) | v1 is +20% over the best-seller rule, v2 is **+53%** | 30-truth simulation ([07](notebooks/07_learning_engine.ipynb)); levels not comparable with the replay |
+
+- **v1's day-one edge over the best-seller rule is modest by construction.** The base assumption makes acceptance proportional to how often an item is chosen organically, which favours best-sellers, so v1 can only win on margin and branch costs. v2 replaces that assumption with learned item-level take rates, and the gap widens.
+- **The profit pool is large; the base case claims a small share of it.** About 49,051 half-orders a year × $3.55 gross profit per add-on (measured margins) ≈ **$174k a year** if every half-order became a pair. The base case corresponds to converting ~9.7% of half-orders.
+- **Value is close to linear in acceptance**, about $2,650 per percentage point: 3% → $8.9k, 6% → $16.8k, 12% → $33.1k. We keep 6% as the base because no Stories data supports a higher rate; the pilot measures the real one.
+
 ![Policy comparison](outputs/figures/05_policy_comparison.png)
 
 ## Assumptions
