@@ -1,0 +1,136 @@
+branch,first_item,first_category,first_price,suggest,suggest_category,discount,suggested_price,pair_total,Q_pairs_anyway,expected_gain_per_order
+Garden,Americano,Hot Coffee,3.15,Butter Croissant,Bakery,0.0,3.65,6.8,0.199,0.18
+Garden,Cappuccino,Hot Coffee,4.05,Egg Sandwich,Breakfast,0.0,8.15,12.2,0.199,0.24
+Garden,Caramel Latte,Hot Coffee,5.75,Egg Sandwich,Breakfast,0.0,8.15,13.9,0.199,0.24
+Garden,Espresso,Hot Coffee,2.65,Butter Croissant,Bakery,0.0,3.65,6.3,0.199,0.18
+Garden,Flat White,Hot Coffee,4.35,Egg Sandwich,Breakfast,0.0,8.15,12.5,0.199,0.24
+Garden,Spanish Latte,Hot Coffee,5.95,Egg Sandwich,Breakfast,0.0,8.15,14.1,0.199,0.24
+Garden,Vanilla Latte,Hot Coffee,5.45,Egg Sandwich,Breakfast,0.0,8.15,13.6,0.199,0.24
+Garden,Coffee Frappe,Cold Coffee,6.55,Egg Sandwich,Breakfast,0.0,8.15,14.7,0.216,0.214
+Garden,Cold Brew,Cold Coffee,5.15,Egg Sandwich,Breakfast,0.0,8.15,13.3,0.216,0.214
+Garden,Iced Americano,Cold Coffee,3.85,Egg Sandwich,Breakfast,0.0,8.15,12.0,0.216,0.214
+Garden,Iced Latte,Cold Coffee,5.35,Egg Sandwich,Breakfast,0.0,8.15,13.5,0.216,0.214
+Garden,Iced Mocha,Cold Coffee,6.25,Egg Sandwich,Breakfast,0.0,8.15,14.4,0.216,0.214
+Garden,Chai Latte,Matcha & Tea,5.25,Butter Croissant,Bakery,0.0,3.65,8.9,0.377,0.24
+Garden,Classic Matcha,Matcha & Tea,6.45,Butter Croissant,Bakery,0.0,3.65,10.1,0.377,0.24
+Garden,English Breakfast Tea,Matcha & Tea,3.45,Butter Croissant,Bakery,0.0,3.65,7.1,0.377,0.24
+Garden,Iced Matcha,Matcha & Tea,6.85,Butter Croissant,Bakery,0.0,3.65,10.5,0.377,0.24
+Garden,Mint Tea,Matcha & Tea,3.65,Butter Croissant,Bakery,0.0,3.65,7.3,0.377,0.24
+Garden,Strawberry Matcha,Matcha & Tea,7.65,Butter Croissant,Bakery,0.0,3.65,11.3,0.377,0.24
+Garden,Fresh Orange Juice,Cold Drinks,5.75,Egg Sandwich,Breakfast,0.0,8.15,13.9,0.201,0.238
+Garden,Lemonade,Cold Drinks,4.65,Egg Sandwich,Breakfast,0.0,8.15,12.8,0.201,0.238
+Garden,Peach Iced Tea,Cold Drinks,4.45,Egg Sandwich,Breakfast,0.0,8.15,12.6,0.201,0.238
+Garden,Sparkling Water,Cold Drinks,2.75,Butter Croissant,Bakery,0.0,3.65,6.4,0.201,0.17
+Garden,Still Water,Cold Drinks,1.95,Butter Croissant,Bakery,0.0,3.65,5.6,0.201,0.17
+Garden,Almond Croissant,Bakery,4.85,Iced Latte,Cold Coffee,0.0,5.35,10.2,0.325,0.312
+Garden,Banana Bread,Bakery,4.45,Iced Latte,Cold Coffee,0.0,5.35,9.8,0.325,0.312
+Garden,Blueberry Muffin,Bakery,3.95,Iced Latte,Cold Coffee,0.0,5.35,9.3,0.325,0.312
+Garden,Butter Croissant,Bakery,3.65,Iced Latte,Cold Coffee,0.0,5.35,9.0,0.325,0.312
+Garden,Chocolate Cookie,Bakery,3.15,Iced Latte,Cold Coffee,0.0,5.35,8.5,0.325,0.312
+Garden,Chocolate Croissant,Bakery,4.25,Iced Latte,Cold Coffee,0.0,5.35,9.6,0.325,0.312
+Garden,Cinnamon Roll,Bakery,5.15,Iced Latte,Cold Coffee,0.0,5.35,10.5,0.325,0.312
+Garden,Pistachio Cookie,Bakery,3.45,Iced Latte,Cold Coffee,0.0,5.35,8.8,0.325,0.312
+Garden,Avocado Toast,Breakfast,9.45,Iced Latte,Cold Coffee,0.0,5.35,14.8,0.253,0.269
+Garden,Egg Sandwich,Breakfast,8.15,Iced Latte,Cold Coffee,0.0,5.35,13.5,0.253,0.269
+Garden,Granola Yoghurt,Breakfast,7.85,Iced Latte,Cold Coffee,0.0,5.35,13.2,0.253,0.269
+Garden,Brownie,Desserts,5.15,Iced Matcha,Matcha & Tea,0.0,6.85,12.0,0.274,0.276
+Garden,Cheesecake Slice,Desserts,6.75,Iced Matcha,Matcha & Tea,0.0,6.85,13.6,0.274,0.276
+Garden,Frozen Yoghurt Cup,Desserts,6.15,Iced Matcha,Matcha & Tea,0.0,6.85,13.0,0.274,0.276
+Garden,Tiramisu Cup,Desserts,6.55,Iced Matcha,Matcha & Tea,0.0,6.85,13.4,0.274,0.276
+Garden,Chicken Pesto Sandwich,Sandwiches,10.75,Peach Iced Tea,Cold Drinks,0.0,4.45,15.2,0.354,0.238
+Garden,Halloumi Wrap,Sandwiches,9.95,Peach Iced Tea,Cold Drinks,0.0,4.45,14.4,0.354,0.238
+Garden,Tuna Sandwich,Sandwiches,8.85,Peach Iced Tea,Cold Drinks,0.0,4.45,13.3,0.354,0.238
+Garden,Turkey & Cheese Sandwich,Sandwiches,9.65,Peach Iced Tea,Cold Drinks,0.0,4.45,14.1,0.354,0.238
+Garden,Chicken Salad Bowl,Meals,12.45,Peach Iced Tea,Cold Drinks,0.0,4.45,16.9,0.348,0.242
+Garden,Quinoa Bowl,Meals,11.65,Peach Iced Tea,Cold Drinks,0.0,4.45,16.1,0.348,0.242
+Garden,Soup of the Day,Meals,7.15,Peach Iced Tea,Cold Drinks,0.0,4.45,11.6,0.348,0.242
+Harbour,Americano,Hot Coffee,3.31,Butter Croissant,Bakery,0.0,3.83,7.14,0.199,0.228
+Harbour,Cappuccino,Hot Coffee,4.25,Egg Sandwich,Breakfast,0.0,8.56,12.81,0.199,0.349
+Harbour,Caramel Latte,Hot Coffee,6.04,Egg Sandwich,Breakfast,0.0,8.56,14.6,0.199,0.349
+Harbour,Espresso,Hot Coffee,2.78,Butter Croissant,Bakery,0.0,3.83,6.61,0.199,0.228
+Harbour,Flat White,Hot Coffee,4.57,Egg Sandwich,Breakfast,0.0,8.56,13.13,0.199,0.349
+Harbour,Spanish Latte,Hot Coffee,6.25,Egg Sandwich,Breakfast,0.0,8.56,14.81,0.199,0.349
+Harbour,Vanilla Latte,Hot Coffee,5.72,Egg Sandwich,Breakfast,0.0,8.56,14.28,0.199,0.349
+Harbour,Coffee Frappe,Cold Coffee,6.88,Chicken Pesto Sandwich,Sandwiches,0.0,11.29,18.17,0.216,0.338
+Harbour,Cold Brew,Cold Coffee,5.41,Chicken Pesto Sandwich,Sandwiches,0.0,11.29,16.7,0.216,0.338
+Harbour,Iced Americano,Cold Coffee,4.04,Egg Sandwich,Breakfast,0.0,8.56,12.6,0.216,0.31
+Harbour,Iced Latte,Cold Coffee,5.62,Chicken Pesto Sandwich,Sandwiches,0.0,11.29,16.91,0.216,0.338
+Harbour,Iced Mocha,Cold Coffee,6.56,Chicken Pesto Sandwich,Sandwiches,0.0,11.29,17.85,0.216,0.338
+Harbour,Chai Latte,Matcha & Tea,5.51,Butter Croissant,Bakery,0.0,3.83,9.34,0.377,0.306
+Harbour,Classic Matcha,Matcha & Tea,6.77,Butter Croissant,Bakery,0.0,3.83,10.6,0.377,0.306
+Harbour,English Breakfast Tea,Matcha & Tea,3.62,Butter Croissant,Bakery,0.0,3.83,7.45,0.377,0.306
+Harbour,Iced Matcha,Matcha & Tea,7.19,Butter Croissant,Bakery,0.0,3.83,11.02,0.377,0.306
+Harbour,Mint Tea,Matcha & Tea,3.83,Butter Croissant,Bakery,0.0,3.83,7.66,0.377,0.306
+Harbour,Strawberry Matcha,Matcha & Tea,8.03,Butter Croissant,Bakery,0.0,3.83,11.86,0.377,0.306
+Harbour,Fresh Orange Juice,Cold Drinks,6.04,Chicken Pesto Sandwich,Sandwiches,0.0,11.29,17.33,0.201,0.372
+Harbour,Lemonade,Cold Drinks,4.88,Chicken Pesto Sandwich,Sandwiches,0.0,11.29,16.17,0.201,0.372
+Harbour,Peach Iced Tea,Cold Drinks,4.67,Chicken Pesto Sandwich,Sandwiches,0.0,11.29,15.96,0.201,0.372
+Harbour,Sparkling Water,Cold Drinks,2.89,Butter Croissant,Bakery,0.0,3.83,6.72,0.201,0.214
+Harbour,Still Water,Cold Drinks,2.05,Butter Croissant,Bakery,0.0,3.83,5.88,0.201,0.214
+Harbour,Almond Croissant,Bakery,5.09,Iced Latte,Cold Coffee,0.0,5.62,10.71,0.325,0.415
+Harbour,Banana Bread,Bakery,4.67,Iced Latte,Cold Coffee,0.0,5.62,10.29,0.325,0.415
+Harbour,Blueberry Muffin,Bakery,4.15,Iced Latte,Cold Coffee,0.0,5.62,9.77,0.325,0.415
+Harbour,Butter Croissant,Bakery,3.83,Iced Latte,Cold Coffee,0.0,5.62,9.45,0.325,0.415
+Harbour,Chocolate Cookie,Bakery,3.31,Iced Latte,Cold Coffee,0.0,5.62,8.93,0.325,0.415
+Harbour,Chocolate Croissant,Bakery,4.46,Iced Latte,Cold Coffee,0.0,5.62,10.08,0.325,0.415
+Harbour,Cinnamon Roll,Bakery,5.41,Iced Latte,Cold Coffee,0.0,5.62,11.03,0.325,0.415
+Harbour,Pistachio Cookie,Bakery,3.62,Iced Latte,Cold Coffee,0.0,5.62,9.24,0.325,0.415
+Harbour,Avocado Toast,Breakfast,9.92,Iced Latte,Cold Coffee,0.0,5.62,15.54,0.253,0.356
+Harbour,Egg Sandwich,Breakfast,8.56,Iced Latte,Cold Coffee,0.0,5.62,14.18,0.253,0.356
+Harbour,Granola Yoghurt,Breakfast,8.24,Iced Latte,Cold Coffee,0.0,5.62,13.86,0.253,0.356
+Harbour,Brownie,Desserts,5.41,Iced Matcha,Matcha & Tea,0.0,7.19,12.6,0.274,0.403
+Harbour,Cheesecake Slice,Desserts,7.09,Iced Matcha,Matcha & Tea,0.0,7.19,14.28,0.274,0.403
+Harbour,Frozen Yoghurt Cup,Desserts,6.46,Iced Matcha,Matcha & Tea,0.0,7.19,13.65,0.274,0.403
+Harbour,Tiramisu Cup,Desserts,6.88,Iced Matcha,Matcha & Tea,0.0,7.19,14.07,0.274,0.403
+Harbour,Chicken Pesto Sandwich,Sandwiches,11.29,Peach Iced Tea,Cold Drinks,0.0,4.67,15.96,0.354,0.29
+Harbour,Halloumi Wrap,Sandwiches,10.45,Peach Iced Tea,Cold Drinks,0.0,4.67,15.12,0.354,0.29
+Harbour,Tuna Sandwich,Sandwiches,9.29,Peach Iced Tea,Cold Drinks,0.0,4.67,13.96,0.354,0.29
+Harbour,Turkey & Cheese Sandwich,Sandwiches,10.13,Peach Iced Tea,Cold Drinks,0.0,4.67,14.8,0.354,0.29
+Harbour,Chicken Salad Bowl,Meals,13.07,Peach Iced Tea,Cold Drinks,0.0,4.67,17.74,0.348,0.295
+Harbour,Quinoa Bowl,Meals,12.23,Peach Iced Tea,Cold Drinks,0.0,4.67,16.9,0.348,0.295
+Harbour,Soup of the Day,Meals,7.51,Peach Iced Tea,Cold Drinks,0.0,4.67,12.18,0.348,0.295
+Uptown,Americano,Hot Coffee,3.02,Butter Croissant,Bakery,0.0,3.5,6.52,0.199,0.205
+Uptown,Cappuccino,Hot Coffee,3.89,Egg Sandwich,Breakfast,0.0,7.82,11.71,0.199,0.31
+Uptown,Caramel Latte,Hot Coffee,5.52,Egg Sandwich,Breakfast,0.0,7.82,13.34,0.199,0.31
+Uptown,Espresso,Hot Coffee,2.54,Butter Croissant,Bakery,0.0,3.5,6.04,0.199,0.205
+Uptown,Flat White,Hot Coffee,4.18,Egg Sandwich,Breakfast,0.0,7.82,12.0,0.199,0.31
+Uptown,Spanish Latte,Hot Coffee,5.71,Egg Sandwich,Breakfast,0.0,7.82,13.53,0.199,0.31
+Uptown,Vanilla Latte,Hot Coffee,5.23,Egg Sandwich,Breakfast,0.0,7.82,13.05,0.199,0.31
+Uptown,Coffee Frappe,Cold Coffee,6.29,Chicken Pesto Sandwich,Sandwiches,0.0,10.32,16.61,0.216,0.295
+Uptown,Cold Brew,Cold Coffee,4.94,Chicken Pesto Sandwich,Sandwiches,0.0,10.32,15.26,0.216,0.295
+Uptown,Iced Americano,Cold Coffee,3.7,Egg Sandwich,Breakfast,0.0,7.82,11.52,0.216,0.275
+Uptown,Iced Latte,Cold Coffee,5.14,Chicken Pesto Sandwich,Sandwiches,0.0,10.32,15.46,0.216,0.295
+Uptown,Iced Mocha,Cold Coffee,6.0,Chicken Pesto Sandwich,Sandwiches,0.0,10.32,16.32,0.216,0.295
+Uptown,Chai Latte,Matcha & Tea,5.04,Butter Croissant,Bakery,0.0,3.5,8.54,0.377,0.276
+Uptown,Classic Matcha,Matcha & Tea,6.19,Butter Croissant,Bakery,0.0,3.5,9.69,0.377,0.276
+Uptown,English Breakfast Tea,Matcha & Tea,3.31,Butter Croissant,Bakery,0.0,3.5,6.81,0.377,0.276
+Uptown,Iced Matcha,Matcha & Tea,6.58,Butter Croissant,Bakery,0.0,3.5,10.08,0.377,0.276
+Uptown,Mint Tea,Matcha & Tea,3.5,Butter Croissant,Bakery,0.0,3.5,7.0,0.377,0.276
+Uptown,Strawberry Matcha,Matcha & Tea,7.34,Butter Croissant,Bakery,0.0,3.5,10.84,0.377,0.276
+Uptown,Fresh Orange Juice,Cold Drinks,5.52,Chicken Pesto Sandwich,Sandwiches,0.0,10.32,15.84,0.201,0.325
+Uptown,Lemonade,Cold Drinks,4.46,Chicken Pesto Sandwich,Sandwiches,0.0,10.32,14.78,0.201,0.325
+Uptown,Peach Iced Tea,Cold Drinks,4.27,Chicken Pesto Sandwich,Sandwiches,0.0,10.32,14.59,0.201,0.325
+Uptown,Sparkling Water,Cold Drinks,2.64,Butter Croissant,Bakery,0.0,3.5,6.14,0.201,0.193
+Uptown,Still Water,Cold Drinks,1.87,Butter Croissant,Bakery,0.0,3.5,5.37,0.201,0.193
+Uptown,Almond Croissant,Bakery,4.66,Iced Latte,Cold Coffee,0.0,5.14,9.8,0.325,0.372
+Uptown,Banana Bread,Bakery,4.27,Iced Latte,Cold Coffee,0.0,5.14,9.41,0.325,0.372
+Uptown,Blueberry Muffin,Bakery,3.79,Iced Latte,Cold Coffee,0.0,5.14,8.93,0.325,0.372
+Uptown,Butter Croissant,Bakery,3.5,Iced Latte,Cold Coffee,0.0,5.14,8.64,0.325,0.372
+Uptown,Chocolate Cookie,Bakery,3.02,Iced Latte,Cold Coffee,0.0,5.14,8.16,0.325,0.372
+Uptown,Chocolate Croissant,Bakery,4.08,Iced Latte,Cold Coffee,0.0,5.14,9.22,0.325,0.372
+Uptown,Cinnamon Roll,Bakery,4.94,Iced Latte,Cold Coffee,0.0,5.14,10.08,0.325,0.372
+Uptown,Pistachio Cookie,Bakery,3.31,Iced Latte,Cold Coffee,0.0,5.14,8.45,0.325,0.372
+Uptown,Avocado Toast,Breakfast,9.07,Iced Latte,Cold Coffee,0.0,5.14,14.21,0.253,0.32
+Uptown,Egg Sandwich,Breakfast,7.82,Iced Latte,Cold Coffee,0.0,5.14,12.96,0.253,0.32
+Uptown,Granola Yoghurt,Breakfast,7.54,Iced Latte,Cold Coffee,0.0,5.14,12.68,0.253,0.32
+Uptown,Brownie,Desserts,4.94,Iced Matcha,Matcha & Tea,0.0,6.58,11.52,0.274,0.358
+Uptown,Cheesecake Slice,Desserts,6.48,Iced Matcha,Matcha & Tea,0.0,6.58,13.06,0.274,0.358
+Uptown,Frozen Yoghurt Cup,Desserts,5.9,Iced Matcha,Matcha & Tea,0.0,6.58,12.48,0.274,0.358
+Uptown,Tiramisu Cup,Desserts,6.29,Iced Matcha,Matcha & Tea,0.0,6.58,12.87,0.274,0.358
+Uptown,Chicken Pesto Sandwich,Sandwiches,10.32,Peach Iced Tea,Cold Drinks,0.0,4.27,14.59,0.354,0.262
+Uptown,Halloumi Wrap,Sandwiches,9.55,Peach Iced Tea,Cold Drinks,0.0,4.27,13.82,0.354,0.262
+Uptown,Tuna Sandwich,Sandwiches,8.5,Peach Iced Tea,Cold Drinks,0.0,4.27,12.77,0.354,0.262
+Uptown,Turkey & Cheese Sandwich,Sandwiches,9.26,Peach Iced Tea,Cold Drinks,0.0,4.27,13.53,0.354,0.262
+Uptown,Chicken Salad Bowl,Meals,11.95,Peach Iced Tea,Cold Drinks,0.0,4.27,16.22,0.348,0.266
+Uptown,Quinoa Bowl,Meals,11.18,Peach Iced Tea,Cold Drinks,0.0,4.27,15.45,0.348,0.266
+Uptown,Soup of the Day,Meals,6.86,Peach Iced Tea,Cold Drinks,0.0,4.27,11.13,0.348,0.266

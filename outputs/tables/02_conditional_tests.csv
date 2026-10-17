@@ -1,0 +1,26 @@
+test,n,chi2,dof,p_value,cramers_v,p_bonferroni,level,significant_5pct
+Drink category -> food category,9563,656.4,12,9.235766369035605e-133,0.151,4.617883184517803e-132,category / context,True
+Daypart -> food category,9563,202.5,12,1.0090014725412267e-36,0.084,5.0450073627061336e-36,category / context,True
+Branch -> food category,9563,92.1,8,1.7610381716536125e-16,0.069,8.805190858268062e-16,category / context,True
+Order type -> food category,9563,20.1,4,0.00048745969594296253,0.046,0.0024372984797148126,category / context,True
+Daypart -> drink category,9563,301.0,9,1.6063365126270864e-59,0.102,8.031682563135432e-59,category / context,True
+Within Cold Coffee: drink product -> food category,2326,13.3,16,0.6485562997068758,0.038,1.0,product (within category),False
+Within Cold Drinks: drink product -> food category,1625,19.8,16,0.2314150040820158,0.055,1.0,product (within category),False
+Within Hot Coffee: drink product -> food category,2693,27.5,24,0.2798197346826404,0.051,1.0,product (within category),False
+Within Matcha & Tea: drink product -> food category,2919,22.7,20,0.3018099741689421,0.044,1.0,product (within category),False
+Within Bakery: drink category -> food product,5100,26.2,21,0.19870635427369418,0.041,1.0,product (within category),False
+Within Breakfast: drink category -> food product,828,4.5,6,0.6049835047932379,0.052,1.0,product (within category),False
+Within Desserts: drink category -> food product,1505,7.9,9,0.5449476112294092,0.042,1.0,product (within category),False
+Within Meals: drink category -> food product,593,2.1,6,0.9123900115985955,0.042,1.0,product (within category),False
+Within Sandwiches: drink category -> food product,1537,5.7,9,0.7648929820728748,0.035,1.0,product (within category),False
+Cold Coffee x Bakery: drink product -> food product,1213,29.5,28,0.3855048483053944,0.078,1.0,product (within category),False
+Cold Coffee x Desserts: drink product -> food product,415,11.1,12,0.5230490797754448,0.094,1.0,product (within category),False
+Cold Coffee x Sandwiches: drink product -> food product,335,10.4,12,0.5797297342206333,0.102,1.0,product (within category),False
+Cold Drinks x Bakery: drink product -> food product,501,20.3,28,0.8543773961853629,0.101,1.0,product (within category),False
+Cold Drinks x Sandwiches: drink product -> food product,502,17.9,12,0.11845041566079548,0.109,1.0,product (within category),False
+Hot Coffee x Bakery: drink product -> food product,1472,52.4,42,0.1299385956746612,0.077,1.0,product (within category),False
+Hot Coffee x Desserts: drink product -> food product,417,22.4,18,0.21473733782356358,0.134,1.0,product (within category),False
+Hot Coffee x Sandwiches: drink product -> food product,389,35.6,18,0.008019501964915817,0.175,0.16039003929831636,product (within category),False
+Matcha & Tea x Bakery: drink product -> food product,1914,49.0,35,0.05814157334692211,0.072,1.0,product (within category),False
+Matcha & Tea x Desserts: drink product -> food product,395,19.8,15,0.18091486591098754,0.129,1.0,product (within category),False
+Matcha & Tea x Sandwiches: drink product -> food product,311,21.3,15,0.12605980617965035,0.151,1.0,product (within category),False

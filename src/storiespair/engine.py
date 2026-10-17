@@ -258,31 +258,30 @@ class PairEngine:
             "saving": round(float(b["list_price"] - b["offer_price"]), 2),
             "expected_gain": float(b["expected_gain"]),
             "Q": float(sc["Q"][0]),
-            "reason": (f"After a {first} in the {dp.lower()}, {cat_share[b['category']]:.0%} of customers who add "
-                       f"something pick {b['category'].lower()}. The {b['item']} earns ${b['gp_if_accepted']:.2f} gross "
-                       f"profit per acceptance at {branch}, the best expected gain once customers who would have "
-                       f"added it anyway are accounted for."),
+            "reason": (f"When a {ctx.first_category.iloc[0]} item is rung first, {cat_share[b['category']]:.0%} of the "
+                       f"customers who add something pick {b['category'].lower()}. The {b['item']} earns "
+                       f"${b['gp_if_accepted']:.2f} gross profit per acceptance at {branch}: the highest expected gain "
+                       f"once customers who would have added it anyway are accounted for."),
             "candidates": cand,
         }
 
-    def playbook(self, typical_hour=None) -> pd.DataFrame:
-        """Branch x daypart x first-item category -> suggested item and price.
+    def playbook(self, when="2026-06-03 13:00") -> pd.DataFrame:
+        """Branch x first product -> suggestion, price and expected gain.
 
-        A lookup table a POS can use on day one, without running any model.
+        With the chosen models the decision depends only on the branch and the
+        first item, so this table IS the engine: a POS can use it on day one
+        without running any model. Refresh it monthly.
         """
-        typical_hour = typical_hour or {"Morning": 9, "Midday": 13, "Afternoon": 17, "Evening": 21}
         rows = []
-        for branch in sorted(self.ue.index.get_level_values(0).unique()):
-            for dp in DAYPARTS:
-                for cat in DRINK_CATEGORIES + FOOD_CATEGORIES:
-                    prods = [p for p in self.cat_of.index if self.cat_of[p] == cat]
-                    # representative first item = the category's best seller at this branch
-                    units = self.ue.loc[branch].loc[prods, "units"]
-                    rep = units.idxmax()
-                    when = pd.Timestamp("2026-06-03") + pd.Timedelta(hours=typical_hour[dp])  # a Wednesday
-                    r = self.recommend(branch, when, [rep])
-                    rows.append({"branch": branch, "daypart": dp, "first_category": cat, "example_first_item": rep,
-                                 "suggest": r.get("suggested_item") if r["offer"] else "(no offer)",
-                                 "discount": r.get("discount", np.nan), "item_price": r.get("item_price", np.nan),
-                                 "expected_gain_per_order": round(r.get("expected_gain", 0.0), 3)})
+        for branch in sorted(self.price_tbl.index):
+            for first in list(self.items["drink"]) + list(self.items["food"]):
+                r = self.recommend(branch, when, [first])
+                rows.append({"branch": branch, "first_item": first, "first_category": self.cat_of[first],
+                             "first_price": float(self.price_tbl.loc[branch, first]),
+                             "suggest": r["suggested_item"] if r["offer"] else "(no offer)",
+                             "suggest_category": r.get("category", ""),
+                             "discount": r.get("discount", 0.0), "suggested_price": r.get("item_price", np.nan),
+                             "pair_total": r.get("combo_total", np.nan),
+                             "Q_pairs_anyway": round(r["Q"], 3),
+                             "expected_gain_per_order": round(r.get("expected_gain", 0.0), 3)})
         return pd.DataFrame(rows)
