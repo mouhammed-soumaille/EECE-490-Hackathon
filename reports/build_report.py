@@ -178,6 +178,8 @@ def build():
         "item is rung, suggests the item from the other side of the pair with the highest <i>expected extra gross profit</i> "
         "at that branch, net of customers who would have bought it anyway. It is built only on what the data supports, "
         "starts as a 135-row lookup table any POS can use, and then learns from every accept and decline.")]
+    _costs = pd.read_csv(TAB / "05_costs.csv")
+    base_net = float(_costs.set_index("staff-cost case").loc["base", "net gain / yr (base acceptance)"])
     s += [Spacer(1, 8), kpis([("72%", "of orders are half a pair<br/>(measured)"), (f"${v1/1000:.0f}k", "extra gross profit a year,<br/>base case (estimate)"),
                               (f"+{(v2y / v1y - 1) * 100:.0f}%", "more with the learning<br/>engine (simulation)"),
                               ("$0", "discount given away<br/>at base assumptions")]), Spacer(1, 10)]
@@ -190,6 +192,11 @@ def build():
         f"<b>Value.</b> At base assumptions Stories Pair adds about {money(v1)} of gross profit a year (P10–P90 "
         f"{money(p10)}–{money(p90)}), 15% more than suggesting the best-seller and 37% more than a classic 10% combo, which would "
         f"also hand out {money(combo_disc)} a year in discounts.",
+        f"<b>Why it is worth doing.</b> After staff time the base case nets about {money(base_net)} a year, about 4.6% on top of "
+        "the three branches' current gross profit, with no new hardware and no discounts. A $3k POS integration would pay back "
+        "in about two months, and the engine stays silent wherever a suggestion would not pay. Anchored in measured margins, "
+        "each 1% of half-orders turned into pairs is worth about $1.7k a year; the pilot measures the real rate before any "
+        "money is spent on rollout.",
         f"<b>Learning.</b> The v2 engine (Thompson-sampling bandit) earns about {money(v2y)} vs {money(v1y)} for v1 in its first "
         "year across 30 simulated customer truths, and beats the best-seller rule and classic combo in all of them.",
         "<b>Next step.</b> Two weeks of accept/decline logging, then a six-week odd/even receipt A/B test, measure the one "
@@ -342,11 +349,14 @@ def build():
     # ---------------- 6c. Value of a pair and stability ----------------
     vs = pd.read_csv(TAB / "08_value_and_stability.csv").set_index("check").value
     s += [P("5c · TWO FINAL CHECKS", "eyebrow"), P("What a pair is worth, and whether the engine is stable", "h1")]
-    s += [P(f"<b>Measured, with no assumptions:</b> a paired order earns {vs['Gross profit per paired order']} of gross profit "
+    s += [P(f"<b>Measured in the data:</b> a paired order earns {vs['Gross profit per paired order']} of gross profit "
             f"against {vs['Gross profit per half-order']} for a half-order (+68%, Welch t-test p &lt; 1e-10). The add-on itself "
             f"earns {vs['Average gross profit of the add-on']} on average ($4.01 at Harbour, $2.85 at Garden). With about 49,000 "
-            f"half-orders a year, <b>every 1% turned into pairs is worth {vs['Value of converting 1% of half-orders']}</b>. "
-            "The $17k base case in section 5 corresponds to converting about 9.7% of half-orders.")]
+            f"half-orders a year, <b>every 1% turned into pairs is worth about {vs['Value of converting 1% of half-orders']}</b>. "
+            "This uses measured prices and costs but no acceptance rate; it does assume a converted order adds a typical add-on "
+            "and does not replace a purchase the customer would have made later. The $16.8k base case in section 5 (before "
+            "staff time) corresponds to converting about 9.7% of half-orders. The +68% gap between paired and half-orders is "
+            "an association (paired orders are bigger in general), which is why the 1% figure uses only the add-on's own profit.")]
     s += [fig("08_value_of_a_pair", "Figure 8b. Left: gross profit per order by composition. Right: yearly value by share of half-orders converted.", max_h=72 * mm)]
     s += [P("<b>Stability:</b> retraining the measured parts on January–March and on April–June gives identical suggestions for "
             f"{vs['Identical suggestions, Jan-Mar vs Apr-Jun']} of the 135 playbook rows; the rest swap between near-equal options "
