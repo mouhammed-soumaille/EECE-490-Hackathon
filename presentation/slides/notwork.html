@@ -1,23 +1,38 @@
-<section id="notwork" data-transition="fade" style="background:#fcfcfb;color:#1c211a;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
-<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#3f6b2f">What we tested</p>
-<h2 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:72px;font-weight:800;line-height:1.1;letter-spacing:-1px">The usual ideas don’t work here</h2>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
-<img src="../../outputs/figures/02_product_pairs_volcano.png" alt="Volcano chart: no product pair clears the significance line" style="width:800px;height:474px;object-fit:contain">
-<div style="display:flex;flex-direction:column;gap:36px">
+<section id="notwork" data-transition="fade" style="background:#fcfcfb;color:#1c211a;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#3f6b2f">What we tested first</p>
+<h2 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:72px;font-weight:800;line-height:1.1;letter-spacing:-1px">Three obvious ideas that don’t work</h2>
+<div style="display:flex;flex-direction:row;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#ffffff;border:1px solid #e2dfd6;border-radius:16px;padding:36px">
+<p style="font-size:24px;font-weight:600;letter-spacing:2px;color:#8a8a7e">IDEA 1</p>
+<h3 style="font-size:34px;font-weight:600;line-height:1.2">Suggest what is usually bought together</h3>
+<p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:72px;font-weight:800;line-height:1;color:#c8642a">0 of 506</p>
+<p style="font-size:26px;line-height:1.4;color:#4a4f44">drink + food pairs stand out from pure chance. Suggestions would be random.</p>
+<p style="font-size:24px;font-weight:600;background:#fbe6da;color:#8a3a12;padding:10px 18px;border-radius:999px">Result: no real pairs</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#ffffff;border:1px solid #e2dfd6;border-radius:16px;padding:36px">
+<p style="font-size:24px;font-weight:600;letter-spacing:2px;color:#8a8a7e">IDEA 2</p>
+<h3 style="font-size:34px;font-weight:600;line-height:1.2">Offer a 10%-off combo</h3>
+<div style="display:flex;flex-direction:column;gap:8px">
+<p style="font-size:24px;color:#4a4f44">Orders that added food</p>
+<div style="display:flex;flex-direction:row;align-items:center;gap:12px"><div style="width:200px;height:28px;background:#a9a79c;border-radius:4px"></div><p style="font-size:24px">25.7% full price</p></div>
+<div style="display:flex;flex-direction:row;align-items:center;gap:12px"><div style="width:195px;height:28px;background:#c8642a;border-radius:4px"></div><p style="font-size:24px">25.1% discounted</p></div>
+</div>
+<p style="font-size:26px;line-height:1.4;color:#4a4f44">Discounted orders didn’t add more food, yet the discount costs about $3.9k a year.</p>
+<p style="font-size:24px;font-weight:600;background:#fbe6da;color:#8a3a12;padding:10px 18px;border-radius:999px">Result: loses money</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#ffffff;border:1px solid #e2dfd6;border-radius:16px;padding:36px">
+<p style="font-size:24px;font-weight:600;letter-spacing:2px;color:#8a8a7e">IDEA 3</p>
+<h3 style="font-size:34px;font-weight:600;line-height:1.2">Use complex AI to guess who adds food</h3>
 <div style="display:flex;flex-direction:column;gap:6px">
-<p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:56px;font-weight:800;color:#c8642a;line-height:1">0 of 506</p>
-<p style="font-size:30px;line-height:1.35;color:#4a4f44">product pairs pass the test. “Bought X, also bought Y” finds nothing.</p>
+<p style="font-size:24px;color:#4a4f44">Accuracy on unseen June orders</p>
+<p style="font-size:26px"><b>0.597</b> simple rule</p>
+<p style="font-size:26px">0.593 standard AI model</p>
+<p style="font-size:26px">0.587 advanced AI model</p>
 </div>
-<div style="display:flex;flex-direction:column;gap:6px">
-<p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:56px;font-weight:800;color:#c8642a;line-height:1">$3.9k a year</p>
-<p style="font-size:30px;line-height:1.35;color:#4a4f44">given away by a 10%-off combo, for little extra sales.</p>
-</div>
-<div style="display:flex;flex-direction:column;gap:6px">
-<p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:56px;font-weight:800;color:#c8642a;line-height:1">No gain</p>
-<p style="font-size:30px;line-height:1.35;color:#4a4f44">from complex AI over a simple rule for who adds an item.</p>
+<p style="font-size:24px;line-height:1.4;color:#4a4f44">0.5 = coin flip. The complex models were no better.</p>
+<p style="font-size:24px;font-weight:600;background:#e6eedf;color:#2c4a20;padding:10px 18px;border-radius:999px">Result: simple rule kept</p>
 </div>
 </div>
-</div>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7a7d70">Tests in notebooks 01–03 and 05</p>
-<aside>We tested the obvious approaches first. Product pair rules find nothing. Discount combos cost more than they bring in. And a complex model was no better than a simple rule, so we kept it simple.</aside>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7a7d70">Data: 33,887 Stories orders · models trained on Jan–Apr, tested on June · discounted-vs-full-price is an observed link, not a controlled test</p>
+<aside>Before building anything we tested the three ideas most teams would try. One: copy what people usually buy together. There are no real product pairs, so that gives random suggestions. Two: a 10% combo. Discounted orders didn't add more food, so the discount is just lost margin, about $3,900 a year. Three: a complex AI model to predict who adds food. It scored no better than a simple rule, so we kept the simple rule.</aside>
 </section>
