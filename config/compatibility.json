@@ -1,0 +1,11 @@
+{
+  "Hot Coffee": ["Bakery", "Breakfast", "Desserts", "Sandwiches", "Meals"],
+  "Cold Coffee": ["Bakery", "Breakfast", "Desserts", "Sandwiches", "Meals"],
+  "Matcha & Tea": ["Bakery", "Breakfast", "Desserts", "Sandwiches", "Meals"],
+  "Cold Drinks": ["Bakery", "Breakfast", "Desserts", "Sandwiches", "Meals"],
+  "Bakery": ["Hot Coffee", "Cold Coffee", "Matcha & Tea", "Cold Drinks"],
+  "Breakfast": ["Hot Coffee", "Cold Coffee", "Matcha & Tea", "Cold Drinks"],
+  "Desserts": ["Hot Coffee", "Cold Coffee", "Matcha & Tea", "Cold Drinks"],
+  "Sandwiches": ["Hot Coffee", "Cold Coffee", "Matcha & Tea", "Cold Drinks"],
+  "Meals": ["Hot Coffee", "Cold Coffee", "Matcha & Tea", "Cold Drinks"]
+}

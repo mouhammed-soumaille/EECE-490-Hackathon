@@ -1,0 +1,13 @@
+check,value,rule
+Rows (product lines),51177,info
+Orders (Transaction IDs),33887,info
+Date range,2026-01-01 to 2026-06-30,info
+Days covered,181,info
+Line revenue formula mismatches (> $0.02),0,pass if 0
+Line gross-profit formula mismatches (> $0.02),0,pass if 0
+Orders spanning >1 branch / time / customer / order type,0,pass if 0
+Repeated product lines inside one order,132,flag
+Revenue on repeated lines (USD),741.43,flag
+Max distinct prices per product x branch,1,info
+Max distinct costs per product x branch,1,info
+Lines with a known customer ID,63.5%,info

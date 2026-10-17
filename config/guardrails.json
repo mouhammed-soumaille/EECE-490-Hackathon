@@ -1,0 +1,16 @@
+{
+  "_note": "Business rules the engine never breaks. Stories can edit these without touching code.",
+  "discount_grid": [
+    0.0,
+    0.05,
+    0.1,
+    0.15
+  ],
+  "min_margin_after_discount": 0.4,
+  "min_expected_gain_usd": 0.05,
+  "price_rounding_usd": 0.05,
+  "max_addon_price_ratio": 2.5,
+  "never_suggest": [],
+  "max_discount_reason": "15% is the deepest discount that appears in Stories' own data.",
+  "max_addon_price_ratio_reason": "Keeps the suggestion affordable: the add-on costs at most 2.5x the first item (a $4 coffee never triggers an $11 sandwich)."
+}

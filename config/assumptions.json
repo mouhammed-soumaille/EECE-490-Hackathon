@@ -1,0 +1,19 @@
+{
+  "_note": "Inputs the data cannot measure because Stories has never logged suggestions. Each has a low / base / high value. Notebook 05 shows how the answer moves across these ranges; a pilot replaces them with measured values.",
+  "base_acceptance": {
+    "low": 0.03, "base": 0.06, "high": 0.12,
+    "meaning": "Share of customers who would NOT have added an item but accept a full-price suggestion of an average-appeal item. Items customers pick more often organically get proportionally higher acceptance."
+  },
+  "discount_lift_per_10pct": {
+    "low": 0.0, "base": 0.10, "high": 0.50,
+    "meaning": "Relative increase in acceptance per 10% off. Base is low because, in the data, a discounted first drink did not change whether food was added (40.8% vs 40.8%)."
+  },
+  "switch_rate": {
+    "low": 0.0, "base": 0.10, "high": 0.25,
+    "meaning": "Share of customers who were going to add a different item and switch to the suggested one."
+  },
+  "offer_rate": {
+    "low": 0.5, "base": 0.8, "high": 1.0,
+    "meaning": "Share of eligible orders where staff actually make the suggestion (till compliance)."
+  }
+}
