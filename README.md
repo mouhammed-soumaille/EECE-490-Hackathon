@@ -23,6 +23,8 @@
 5. **Loyalty IDs carry no personal preference** (repeat-choice rate equals chance, 94% of IDs seen at several branches), so personalisation is not worth its privacy cost on this data. ([02](notebooks/02_pair_evidence.ipynb))
 6. **A one-line baseline matches machine learning** for predicting whether an order pairs (June AUC 0.597 vs 0.593 vs 0.587), so the deployed model is the simple one. ([03](notebooks/03_receptiveness_model.ipynb))
 7. **Branch costs change the right suggestion:** Garden's 1.43× unit costs flip 7 of its 45 suggestions. ([04](notebooks/04_engine_and_pricing.ipynb), [05](notebooks/05_value_and_pilot.ipynb))
+8. **A pair is worth +$3.02 of gross profit (+68%), measured.** Paired orders earn $7.46 vs $4.44 for half-orders, so **every 1% of half-orders turned into pairs is worth ~$1,740 a year** with no acceptance assumption at all; the $17k base case means converting ~9.7% of them. ([08](notebooks/08_value_and_stability.ipynb))
+9. **The engine is stable.** Retrained on Jan–Mar vs Apr–Jun, 66% of suggestions are identical and the rest swap between near-equal options; a three-month-old playbook still keeps **96.4%** of the value, so a monthly refresh is plenty. ([08](notebooks/08_value_and_stability.ipynb))
 
 ---
 
@@ -38,6 +40,7 @@
 | 6 | Loyalty IDs carry **no personal preference** | Repeat-choice rate = chance (z = −0.85); 94% of IDs seen at 2+ branches | [02](notebooks/02_pair_evidence.ipynb) |
 | 7 | A simple rate-by-first-category baseline **ties** logistic regression and **beats** gradient boosting on unseen June orders | June AUC 0.597 vs 0.593 vs 0.587; bootstrap CIs include or favour the baseline | [03](notebooks/03_receptiveness_model.ipynb) |
 | 8 | Discounted orders did not pair more (association, not a test) | Naive view 34% vs 25% is a counting artifact; first drink discounted vs not: 25.1% vs 25.7%, p = 0.65 | [01](notebooks/01_eda_attach_gap.ipynb) |
+| 9b | A paired order earns **$7.46** gross profit vs **$4.44** for a half-order (+68%); the add-on itself earns $3.55 | Welch t-test p < 1e-10 | [08](notebooks/08_value_and_stability.ipynb) |
 | 9 | Garden pays **1.43×** Harbour's unit cost on all 45 products while pricing 5% lower | Ratio 1.426–1.439 on every product, incl. bottled water | [01](notebooks/01_eda_attach_gap.ipynb) |
 
 ## The engine
@@ -200,6 +203,7 @@ v2 pays a short exploration cost (51% of the oracle's profit in week 1 vs 64% fo
 | [`notebooks/05_value_and_pilot.ipynb`](notebooks/05_value_and_pilot.ipynb) | Value, sensitivity, pilot design |
 | [`notebooks/06_pos_demo.ipynb`](notebooks/06_pos_demo.ipynb) | Till prototype (Gradio app in Colab) |
 | [`notebooks/07_learning_engine.ipynb`](notebooks/07_learning_engine.ipynb) | v2: Thompson-sampling bandit, simulation vs fixed rules and oracle |
+| [`notebooks/08_value_and_stability.ipynb`](notebooks/08_value_and_stability.ipynb) | Measured value of a pair; engine stability across quarters |
 | [`app/`](app) | Standalone till app (`index.html`) and its build script |
 | [`reports/`](reports) | Project report PDF and the script that builds it |
 | [`presentation/`](presentation) | Pitch deck slides (HTML source) |
@@ -217,5 +221,6 @@ v2 pays a short exploration cost (51% of the oracle's profit in week 1 vs 64% fo
 [![05](https://img.shields.io/badge/Colab-05_value-F9AB00?logo=googlecolab)](https://colab.research.google.com/github/mouhammed-soumaille/EECE-490-Hackathon/blob/main/notebooks/05_value_and_pilot.ipynb)
 [![06](https://img.shields.io/badge/Colab-06_demo-F9AB00?logo=googlecolab)](https://colab.research.google.com/github/mouhammed-soumaille/EECE-490-Hackathon/blob/main/notebooks/06_pos_demo.ipynb)
 [![07](https://img.shields.io/badge/Colab-07_learning-F9AB00?logo=googlecolab)](https://colab.research.google.com/github/mouhammed-soumaille/EECE-490-Hackathon/blob/main/notebooks/07_learning_engine.ipynb)
+[![08](https://img.shields.io/badge/Colab-08_checks-F9AB00?logo=googlecolab)](https://colab.research.google.com/github/mouhammed-soumaille/EECE-490-Hackathon/blob/main/notebooks/08_value_and_stability.ipynb)
 
 Every notebook is committed with its outputs, so results can be inspected on GitHub without running anything.

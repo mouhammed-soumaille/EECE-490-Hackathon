@@ -339,6 +339,22 @@ def build():
     ])
     s += [PageBreak()]
 
+    # ---------------- 6c. Value of a pair and stability ----------------
+    vs = pd.read_csv(TAB / "08_value_and_stability.csv").set_index("check").value
+    s += [P("5c · TWO FINAL CHECKS", "eyebrow"), P("What a pair is worth, and whether the engine is stable", "h1")]
+    s += [P(f"<b>Measured, with no assumptions:</b> a paired order earns {vs['Gross profit per paired order']} of gross profit "
+            f"against {vs['Gross profit per half-order']} for a half-order (+68%, Welch t-test p &lt; 1e-10). The add-on itself "
+            f"earns {vs['Average gross profit of the add-on']} on average ($4.01 at Harbour, $2.85 at Garden). With about 49,000 "
+            f"half-orders a year, <b>every 1% turned into pairs is worth {vs['Value of converting 1% of half-orders']}</b>. "
+            "The $17k base case in section 5 corresponds to converting about 9.7% of half-orders.")]
+    s += [fig("08_value_of_a_pair", "Figure 8b. Left: gross profit per order by composition. Right: yearly value by share of half-orders converted.", max_h=72 * mm)]
+    s += [P("<b>Stability:</b> retraining the measured parts on January–March and on April–June gives identical suggestions for "
+            f"{vs['Identical suggestions, Jan-Mar vs Apr-Jun']} of the 135 playbook rows; the rest swap between near-equal options "
+            "(a lemonade for a peach iced tea). Scored with the April–June engine, the three-month-old playbook keeps "
+            f"<b>{vs['Value kept by a 3-month-old playbook']}</b> of the value. The engine tracks stable behaviour rather than "
+            "noise, and a monthly refresh is more than enough.")]
+    s += [PageBreak()]
+
     # ---------------- 7. Learning engine ----------------
     s += [P("6 · STORIES PAIR v2", "eyebrow"), P("An engine that learns at the till", "h1")]
     s += [P("v2 replaces the acceptance assumption with a Thompson-sampling bandit. Each arm (first-item category, suggested "
@@ -428,7 +444,7 @@ def build():
         "would be worth up to ~$32k a year on its own, an upper bound.",
     ])
     s += [P("Reproducibility", "h2"),
-          P("Every number in this report comes from the notebooks in the repository (00–07), which run top to bottom in Google "
+          P("Every number in this report comes from the notebooks in the repository (00–08), which run top to bottom in Google "
             "Colab and are committed with their outputs. Shared code lives in src/storiespair; this report is rebuilt with "
             "python reports/build_report.py.", "small")]
 
