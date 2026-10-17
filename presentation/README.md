@@ -1,8 +1,8 @@
 # Pitch deck
 
-13 slides on how Stories Pair works and how it raises profit, written for the founders and investors.
+10 short slides on what Stories Pair does and how it raises profit, using the charts from our tests.
 
-- `deck.json` lists the slide order and sections; `slides/*.html` holds one 1920×1080 slide each, with speaker notes in the `<aside>` at the end of every slide.
-- The presentable version is a Claude Slides deck (present mode, export to PDF or PowerPoint). Ask the team for the link.
+- `deck.json` lists the slide order; `slides/*.html` holds one 1920×1080 slide each, with speaker notes in the `<aside>` at the end of each slide. Charts come from `outputs/figures/`.
+- The presentable version is a Claude Slides deck (present mode, export to PDF or PowerPoint).
 
-Slide order: cover · problem · why the usual fixes fail · the insight · how it works · the till · the profit math · what it earns · the learning engine · why the numbers can be trusted · the pilot · where it goes · the ask.
+Slide order: cover · 72% of orders are half a pair · what people add is predictable · the usual ideas don't work · how it works · the till · +$17k a year · it gets smarter every night · even the bad case makes money · the 8-week pilot.

@@ -1,38 +1,19 @@
-<section id="learns" data-transition="fade" style="background:#1c211a;color:#eef1e8;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
-<div style="display:flex;flex-direction:column;gap:16px">
-<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#8fbd6c">The AI that learns</p>
-<h2 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:72px;font-weight:800;line-height:1.1;letter-spacing:-1px">Every accept and decline makes it better</h2>
+<section id="learns" data-transition="fade" style="background:#fcfcfb;color:#1c211a;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#3f6b2f">The AI</p>
+<h2 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:72px;font-weight:800;line-height:1.1;letter-spacing:-1px">It gets smarter every night</h2>
+<div style="display:grid;grid-template-columns:1.6fr 1fr;gap:56px;align-items:center">
+<img src="../../outputs/figures/07_learning_curve.png" alt="Learning curve: the learning engine rises from 51% to 87% of the best possible profit; fixed rules stay flat" style="width:960px;height:530px;object-fit:contain">
+<div style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:96px;font-weight:800;color:#3f6b2f;line-height:1">+27%</p>
+<p style="font-size:30px;line-height:1.35;color:#4a4f44">more profit in year one than the fixed version</p>
 </div>
-<div style="display:grid;grid-template-columns:1.45fr 1fr;gap:64px;align-items:start">
-<div style="display:flex;flex-direction:column;gap:16px">
-<p style="font-size:26px;color:#c9d4bf">Share of a perfect-knowledge oracle’s profit, by week after launch</p>
-<svg aria-label="Learning curve: v2 rises from 51% to 87% of oracle profit over 52 weeks while v1 stays at 64%, best-seller at 53% and classic combo at 51%" width="960" height="420" viewBox="0 0 960 420">
-<line x1="0" y1="20" x2="960" y2="20" stroke="#3a4634" stroke-width="2"/>
-<line x1="0" y1="380" x2="960" y2="380" stroke="#3a4634" stroke-width="2"/>
-<polyline fill="none" stroke="#c8642a" stroke-width="4" points="0,314 960,311"/>
-<polyline fill="none" stroke="#9a9a8e" stroke-width="4" points="0,304 960,301"/>
-<polyline fill="none" stroke="#c9d4bf" stroke-width="4" stroke-dasharray="12 8" points="0,239 960,238"/>
-<polyline fill="none" stroke="#8fbd6c" stroke-width="7" points="0,312 19,251 38,221 56,206 132,175 282,147 471,124 720,110 960,97"/>
-<circle cx="950" cy="97" r="10" fill="#8fbd6c"/>
-</svg>
-<div style="display:flex;flex-direction:row;gap:32px;flex-wrap:wrap">
-<p style="font-size:24px;color:#8fbd6c"><b>v2 learning</b> 51% → 87%</p>
-<p style="font-size:24px;color:#c9d4bf">v1 fixed 64%</p>
-<p style="font-size:24px;color:#b5b3a8">best-seller 53%</p>
-<p style="font-size:24px;color:#e0956a">10% combo 51%</p>
-</div>
-</div>
-<div style="display:flex;flex-direction:column;gap:32px">
-<div style="display:flex;flex-direction:column;gap:4px">
-<p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:120px;font-weight:800;line-height:1;color:#8fbd6c">+27%</p>
-<p style="font-size:28px;line-height:1.35;color:#d6dfcd">first-year profit vs the fixed engine ($27.4k vs $21.5k)</p>
-</div>
-<div style="display:flex;flex-direction:column;gap:4px">
-<p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:120px;font-weight:800;line-height:1;color:#eef1e8">30 / 30</p>
-<p style="font-size:28px;line-height:1.35;color:#d6dfcd">simulated customer truths where it beats best-seller and combo rules</p>
+<div style="display:flex;flex-direction:column;gap:6px">
+<p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:96px;font-weight:800;color:#3f6b2f;line-height:1">30 / 30</p>
+<p style="font-size:30px;line-height:1.35;color:#4a4f44">test scenarios where it beats the simple rules</p>
 </div>
 </div>
 </div>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#8f9a85">Thompson-sampling bandit, warm-started from the data; simulation over 30 hidden truths × 52 weeks (notebook 07)</p>
-<aside>Version two is a Thompson-sampling bandit, the reinforcement-learning method behind modern recommendation testing. It starts from what the data knows, explores a little in week one, overtakes the fixed engine by week three, and reaches 87% of a perfect-knowledge oracle within a year. No retraining, no GPU: two counts per option, updated nightly.</aside>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7a7d70">Simulation: 30 possible customer behaviours × 1 year (notebook 07)</p>
+<aside>Every accept and decline teaches the engine which pairings work. In simulation it overtakes the fixed version within three weeks and ends the year 27% ahead.</aside>
 </section>
