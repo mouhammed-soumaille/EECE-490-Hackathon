@@ -162,6 +162,15 @@ v2 pays a short exploration cost (51% of the oracle's profit in week 1 vs 64% fo
 - **Colab demo** ([06](notebooks/06_pos_demo.ipynb)): the same flow as a Gradio app with a public share link.
 - **Integration path:** day one, load [`outputs/playbook.csv`](outputs/playbook.csv) into the POS; during the pilot, log accept/decline; then a nightly job updates two counts per arm and republishes the table.
 
+### Extension: a customer-facing pairing screen (proposed, not built)
+
+The same engine can drive a screen the **customer** sees, instead of a line the cashier says: a counter display, a self-order kiosk or the QR menu shows the order so far plus the engine's top 2–3 pairings with prices, and the customer taps to add one.
+
+- **Why it could be worth more.** The base case assumes staff make the suggestion on 80% of orders; a screen shows it on every order, and the assumptions table puts 100% coverage at about **$21.0k a year** at the same acceptance (vs $16.8k). It also removes the staff-time cost (~$300 a year) and makes the offer consistent across shifts.
+- **Why it makes the AI learn faster.** A cashier offers one item, so each order teaches the engine yes or no. A screen showing several options also reveals *which* one the customer picked, and the bandit in v2 can learn from that choice directly.
+- **What could make it worth less.** Acceptance of a passive screen may be lower than a spoken suggestion (no data either way), and screens add hardware and integration cost. The engine, the playbook and the guardrails are unchanged; only the delivery channel differs.
+- **How to decide.** Add a third arm to the pilot (no suggestion / cashier suggestion / screen) on odd/even receipts at one branch, and compare extra gross profit per order net of hardware cost.
+
 ## The pilot Stories can run next month
 
 1. **Acceptance logging, 2 weeks, all branches.** Staff make the playbook suggestion and tap accepted/declined (the demo in [06](notebooks/06_pos_demo.ipynb) shows the flow). ~2,200 suggestions estimate acceptance to ±1 point. If acceptance is below ~2%, stop.
