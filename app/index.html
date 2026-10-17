@@ -1,0 +1,558 @@
+<title>Stories Pair Till</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: a working till. Menu on the left, the paper ticket in the middle, the engine's reasoning on the right. */
+:root {
+  --bg: #f3f2ee;          /* counter top */
+  --surface: #ffffff;     /* screen panels */
+  --paper: #fffdf8;       /* thermal receipt */
+  --ink: #1c1b18;
+  --ink-2: #5d5a52;
+  --ink-3: #8b877c;
+  --line: #e2dfd6;
+  --accent: #3f6b2f;      /* matcha */
+  --accent-soft: #e6eedf;
+  --accent-ink: #ffffff;
+  --espresso: #4a2f22;
+  --good: #2f7d4f;
+  --bad: #b2452f;
+  --warn: #a86b00;
+  --v1: #8b877c;
+  --v2: #3f6b2f;
+  --font-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141412; --surface: #1d1c19; --paper: #23221e; --ink: #f0eee8; --ink-2: #bdb9ae; --ink-3: #8f8b80;
+    --line: #34322c; --accent: #8fbd6c; --accent-soft: #263222; --accent-ink: #121a0e; --espresso: #d9b8a3;
+    --good: #6cc391; --bad: #e98a73; --warn: #e3b14f; --v1: #8f8b80; --v2: #8fbd6c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141412; --surface: #1d1c19; --paper: #23221e; --ink: #f0eee8; --ink-2: #bdb9ae; --ink-3: #8f8b80;
+  --line: #34322c; --accent: #8fbd6c; --accent-soft: #263222; --accent-ink: #121a0e; --espresso: #d9b8a3;
+  --good: #6cc391; --bad: #e98a73; --warn: #e3b14f; --v1: #8f8b80; --v2: #8fbd6c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.45; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); max-width: 1320px; margin: 0 auto; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* header */
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding-block: 12px; }
+.brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+.brand b { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }
+.brand span { color: var(--ink-3); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+.seg { display: inline-flex; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; font-size: 13px; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.tabs { display: flex; gap: 4px; }
+.tabs button { border: 0; background: transparent; padding: 8px 10px; font-weight: 600; color: var(--ink-3); border-bottom: 2px solid transparent; }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+main .wrap { padding-block: 18px 40px; }
+.view[hidden] { display: none !important; }
+
+/* till grid */
+.till { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 1020px) { .till { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .reasoning { grid-column: 1 / -1; } }
+@media (max-width: 680px) { .till { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; }
+.panel h2 { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin: 0 0 10px; letter-spacing: -0.01em; }
+.eyebrow { font-size: 11px; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+
+.cats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.cats button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 10px; font-size: 12px; color: var(--ink-2); }
+.cats button[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); background: var(--surface); font-weight: 600; }
+.menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; }
+.item { text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 9px 10px; display: grid; gap: 2px; min-height: 58px; transition: border-color .12s, transform .12s; }
+.item:hover { border-color: var(--ink-3); }
+.item:active { transform: translateY(1px); }
+.item .n { font-weight: 600; font-size: 13px; line-height: 1.25; }
+.item .p { font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); }
+.item.drink { box-shadow: inset 3px 0 0 var(--espresso); }
+.item.food { box-shadow: inset 3px 0 0 var(--accent); }
+.hint { color: var(--ink-3); font-size: 12px; margin-top: 10px; }
+
+/* ticket */
+.ticket { background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 16px 16px 12px; font-family: var(--font-mono); font-size: 13px; position: relative; }
+.ticket::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 8px;
+  background: radial-gradient(circle at 6px -2px, transparent 6px, var(--paper) 6.5px) repeat-x; background-size: 12px 8px; }
+.tk-head { display: flex; justify-content: space-between; gap: 8px; color: var(--ink-2); font-size: 12px; border-bottom: 1px dashed var(--line); padding-bottom: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.tk-line { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; }
+.tk-line .x { border: 0; background: none; color: var(--ink-3); padding: 0 0 0 6px; }
+.tk-empty { color: var(--ink-3); padding: 10px 0; }
+.tk-total { display: flex; justify-content: space-between; border-top: 1px dashed var(--line); margin-top: 8px; padding-top: 8px; font-weight: 600; }
+.tk-tools { display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap; font-family: var(--font-body); }
+.tk-tools label { font-size: 12px; color: var(--ink-2); }
+select, input[type=range] { accent-color: var(--accent); }
+select { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 4px 6px; color: var(--ink); }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 8px 12px; font-weight: 600; font-size: 13px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.ghost { background: transparent; }
+.btn:disabled { opacity: .45; cursor: default; }
+
+.offer { margin-top: 18px; border-radius: var(--r); border: 1.5px solid var(--accent); background: var(--surface); overflow: hidden; }
+.offer .o-top { background: var(--accent-soft); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.offer .o-name { font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--accent); letter-spacing: -0.01em; }
+.offer .o-body { padding: 12px 14px; display: grid; gap: 8px; }
+.offer .o-pair { font-family: var(--font-display); font-weight: 700; font-size: 20px; line-height: 1.15; text-wrap: balance; }
+.offer .o-price { font-family: var(--font-mono); color: var(--ink-2); }
+.offer .o-say { background: var(--bg); border-radius: 8px; padding: 9px 11px; font-size: 13.5px; }
+.offer .o-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.offer.quiet { border-color: var(--line); }
+.offer.quiet .o-top { background: var(--bg); }
+.offer.quiet .o-name { color: var(--ink-2); }
+.pill { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.pill.v2 { color: var(--v2); } .pill.v1 { color: var(--v1); }
+
+/* reasoning */
+.kv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+.kv div { background: var(--bg); border-radius: 8px; padding: 8px 10px; min-width: 0; }
+.kv b { display: block; font-family: var(--font-mono); font-size: 16px; font-weight: 600; }
+.kv span { font-size: 11px; color: var(--ink-3); }
+.cand { display: grid; gap: 6px; }
+.crow { display: grid; grid-template-columns: minmax(0, 1fr) 64px; gap: 8px; align-items: center; font-size: 12.5px; }
+.crow .lbl { display: flex; justify-content: space-between; gap: 6px; min-width: 0; }
+.crow .lbl span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.crow .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; grid-column: 1 / -1; }
+.crow .bar i { display: block; height: 100%; background: var(--ink-3); border-radius: 3px; }
+.crow.best .bar i { background: var(--accent); }
+.crow .g { font-family: var(--font-mono); text-align: right; }
+.why { font-size: 12.5px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 12px; }
+.belief { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+.belief svg { width: 100%; height: auto; display: block; }
+
+.session { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+@media (max-width: 680px) { .session { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; }
+.stat b { font-family: var(--font-mono); font-size: 20px; display: block; }
+.stat span { font-size: 12px; color: var(--ink-3); }
+
+/* learn + business */
+.learn-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 900px) { .learn-grid { grid-template-columns: minmax(0, 1fr); } }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart text { fill: var(--ink-2); font-family: var(--font-body); font-size: 11px; }
+.lede { font-size: 15px; color: var(--ink-2); max-width: 66ch; margin: 0 0 16px; }
+h1.h { font-family: var(--font-display); font-weight: 800; font-size: clamp(24px, 3.4vw, 36px); letter-spacing: -0.025em; margin: 4px 0 8px; text-wrap: balance; line-height: 1.08; }
+.figs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
+@media (max-width: 800px) { .figs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.fig { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; }
+.fig b { font-family: var(--font-display); font-weight: 800; font-size: 30px; letter-spacing: -0.02em; display: block; }
+.fig span { font-size: 12.5px; color: var(--ink-2); }
+.fig small { display: block; font-size: 11px; color: var(--ink-3); margin-top: 6px; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 800px) { .steps { grid-template-columns: minmax(0, 1fr); } }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; }
+.step h3 { font-family: var(--font-display); margin: 4px 0 6px; font-size: 16px; }
+.step p { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); margin: 6px 0; }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+.note { font-size: 12px; color: var(--ink-3); margin-top: 10px; }
+.toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--surface); padding: 8px 14px; border-radius: 999px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><b>Stories Pair</b><span>till prototype</span></div>
+    <div class="seg" role="group" aria-label="Branch" id="branchSeg"></div>
+    <div class="seg" role="group" aria-label="Engine">
+      <button id="m1" aria-pressed="false" title="v1: measured model + assumed acceptance">v1 measured</button>
+      <button id="m2" aria-pressed="true" title="v2: learns acceptance from every accept and decline">v2 learning</button>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-view="till" id="tab-till">Till</button>
+      <button role="tab" aria-selected="false" data-view="learn" id="tab-learn">How it learns</button>
+      <button role="tab" aria-selected="false" data-view="biz" id="tab-biz">Business case</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+<section class="view" id="view-till">
+  <div class="till">
+    <div class="panel">
+      <div class="eyebrow">Menu · tap to ring</div>
+      <div class="cats" id="cats"></div>
+      <div class="menu" id="menu"></div>
+      <div class="hint">Drinks have a brown edge, food a green one. Ring one item and the engine suggests the other half of the pair.</div>
+    </div>
+
+    <div>
+      <div class="ticket" aria-live="polite">
+        <div class="tk-head"><span id="tkNo">Receipt</span><span id="tkWhere"></span></div>
+        <div id="tkLines"></div>
+        <div class="tk-total"><span>Total</span><span id="tkTotal" class="num">$0.00</span></div>
+      </div>
+      <div class="tk-tools">
+        <label for="hour">Time</label>
+        <input type="range" id="hour" min="7" max="23" step="1" value="9" aria-label="Hour of day">
+        <span id="hourLbl" class="num">09:00</span>
+        <button class="btn ghost" id="newOrder">New order</button>
+      </div>
+      <div id="offer"></div>
+    </div>
+
+    <div class="panel reasoning">
+      <h2>Behind the counter</h2>
+      <div class="kv">
+        <div><b id="kQ">–</b><span>pair without help</span></div>
+        <div><b id="kGain">–</b><span>expected gain</span></div>
+        <div><b id="kArms">–</b><span>options scored</span></div>
+      </div>
+      <div class="eyebrow" style="margin-bottom:6px">Top options by expected gross profit</div>
+      <div class="cand" id="cand"><div class="hint">Ring an item to see the engine's options.</div></div>
+      <div class="why" id="why"></div>
+      <div class="belief" id="belief" hidden></div>
+    </div>
+  </div>
+
+  <div class="session">
+    <div class="stat"><b id="sShown" class="num">0</b><span>suggestions shown</span></div>
+    <div class="stat"><b id="sAcc" class="num">0</b><span>accepted</span></div>
+    <div class="stat"><b id="sRate" class="num">–</b><span>acceptance rate</span></div>
+    <div class="stat"><b id="sGp" class="num">$0.00</b><span>add-on gross profit</span></div>
+  </div>
+</section>
+
+<section class="view" id="view-learn" hidden>
+  <div class="eyebrow">Stories Pair v2</div>
+  <h1 class="h">Every accept and decline makes the next suggestion better</h1>
+  <p class="lede">The engine keeps a belief about how often each suggestion is accepted. It starts from what six months of Stories transactions can tell it, then learns the rest at the till. Run a simulated service below: the same customers meet the fixed v1 engine and the learning v2 engine, and their true tastes are hidden from both.</p>
+  <div class="learn-grid">
+    <div class="panel chart">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+        <h2 style="margin:0">Extra gross profit, simulated customers</h2>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary" id="simRun">Simulate 4 weeks of service</button>
+          <button class="btn ghost" id="simReset">New hidden truth</button>
+        </div>
+      </div>
+      <div class="legend"><span><i style="background:var(--v2)"></i>v2 learning</span><span><i style="background:var(--v1)"></i>v1 fixed</span><span><i style="background:var(--warn)"></i>classic 10% combo</span></div>
+      <div id="simChart"></div>
+      <div class="note" id="simNote">About 5,200 customers (4 weeks at Stories' current volume). The hidden truth is drawn at random within the ranges in the project's assumptions file.</div>
+    </div>
+    <div class="panel">
+      <h2>What happened</h2>
+      <div class="kv" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+        <div><b id="lV2">–</b><span>v2 extra profit</span></div>
+        <div><b id="lV1">–</b><span>v1 extra profit</span></div>
+        <div><b id="lUp">–</b><span>v2 vs v1</span></div>
+        <div><b id="lAcc">–</b><span>acceptance seen</span></div>
+      </div>
+      <div class="why" id="lWhy">Press simulate. v2 explores for the first few days, then pulls ahead as it learns which pairings customers actually take.</div>
+      <div class="note">In the project's full study (notebook 07: 30 hidden truths, one year), v2 earned about $27k vs $21k for v1 and beat the best-seller rule and classic combo in every truth.</div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="view-biz" hidden>
+  <div class="eyebrow">Business case · Stories Coffee, Jan–Jun 2026</div>
+  <h1 class="h">72% of orders are half a pair. Stories Pair completes them profitably.</h1>
+  <p class="lede">Measured on 33,887 real orders across Harbour, Garden and Uptown. Value figures are estimates built on those measurements plus stated assumptions about acceptance, which the pilot measures.</p>
+  <div class="figs">
+    <div class="fig"><b>72%</b><span>of orders contain only a drink or only food</span><small>measured · 40.9% drink-only, 30.9% food-only</small></div>
+    <div class="fig"><b>$17k</b><span>extra gross profit a year, v1 at base assumptions</span><small>estimate · P10–P90 $12k–$27k</small></div>
+    <div class="fig"><b>+27%</b><span>more for v2 learning vs v1, first year</span><small>simulation · 30 hidden truths</small></div>
+    <div class="fig"><b>$0</b><span>discounts handed out at base assumptions</span><small>a classic 10% combo gives away ~$3.9k a year</small></div>
+  </div>
+  <div class="panel chart" style="margin-bottom:16px">
+    <h2>Same suggestions, different engines: estimated extra gross profit per year</h2>
+    <div id="bizChart"></div>
+    <div class="note">Base assumptions, engine trained Jan–May and replayed on all June orders. Gross profit excludes staff time and integration cost.</div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="eyebrow">Measured</div><h3>Who pairs, and with what</h3><p>Pairing depends on what is rung first, not on branch or hour. A matcha pulls bakery 78% of the time; a sandwich pulls a cold drink 41% of the time. No product-level pair survives testing, so the engine picks the category from data and the item by profit.</p></div>
+    <div class="step"><div class="eyebrow">Decided</div><h3>Profit, not popularity</h3><p>Each option is scored on expected extra gross profit at that branch, net of customers who would buy anyway. Garden's 1.43× unit costs change its best suggestion. Discounts are used only when they pay.</p></div>
+    <div class="step"><div class="eyebrow">Learned</div><h3>Pilot, then learn every night</h3><p>Two weeks logging accept/decline, then six weeks of odd/even receipts as an A/B test. After that, v2 updates its beliefs nightly from the till log: no retraining, no customer data.</p></div>
+  </div>
+</section>
+
+</div>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const P = {"items": [{"name": "Americano", "cat": "Hot Coffee", "side": "drink", "price": {"Garden": 3.15, "Harbour": 3.31, "Uptown": 3.02}, "cost": {"Garden": 1.03, "Harbour": 0.72, "Uptown": 0.69}, "units": 1125}, {"name": "Cappuccino", "cat": "Hot Coffee", "side": "drink", "price": {"Garden": 4.05, "Harbour": 4.25, "Uptown": 3.89}, "cost": {"Garden": 1.6, "Harbour": 1.12, "Uptown": 1.08}, "units": 1681}, {"name": "Caramel Latte", "cat": "Hot Coffee", "side": "drink", "price": {"Garden": 5.75, "Harbour": 6.04, "Uptown": 5.52}, "cost": {"Garden": 2.67, "Harbour": 1.87, "Uptown": 1.8}, "units": 1099}, {"name": "Espresso", "cat": "Hot Coffee", "side": "drink", "price": {"Garden": 2.65, "Harbour": 2.78, "Uptown": 2.54}, "cost": {"Garden": 0.93, "Harbour": 0.65, "Uptown": 0.62}, "units": 687}, {"name": "Flat White", "cat": "Hot Coffee", "side": "drink", "price": {"Garden": 4.35, "Harbour": 4.57, "Uptown": 4.18}, "cost": {"Garden": 1.77, "Harbour": 1.24, "Uptown": 1.19}, "units": 1372}, {"name": "Spanish Latte", "cat": "Hot Coffee", "side": "drink", "price": {"Garden": 5.95, "Harbour": 6.25, "Uptown": 5.71}, "cost": {"Garden": 2.83, "Harbour": 1.98, "Uptown": 1.9}, "units": 1235}, {"name": "Vanilla Latte", "cat": "Hot Coffee", "side": "drink", "price": {"Garden": 5.45, "Harbour": 5.72, "Uptown": 5.23}, "cost": {"Garden": 2.46, "Harbour": 1.72, "Uptown": 1.65}, "units": 1396}, {"name": "Coffee Frappe", "cat": "Cold Coffee", "side": "drink", "price": {"Garden": 6.55, "Harbour": 6.88, "Uptown": 6.29}, "cost": {"Garden": 3.62, "Harbour": 2.53, "Uptown": 2.43}, "units": 958}, {"name": "Cold Brew", "cat": "Cold Coffee", "side": "drink", "price": {"Garden": 5.15, "Harbour": 5.41, "Uptown": 4.94}, "cost": {"Garden": 1.66, "Harbour": 1.16, "Uptown": 1.11}, "units": 1498}, {"name": "Iced Americano", "cat": "Cold Coffee", "side": "drink", "price": {"Garden": 3.85, "Harbour": 4.04, "Uptown": 3.7}, "cost": {"Garden": 1.23, "Harbour": 0.86, "Uptown": 0.83}, "units": 1546}, {"name": "Iced Latte", "cat": "Cold Coffee", "side": "drink", "price": {"Garden": 5.35, "Harbour": 5.62, "Uptown": 5.14}, "cost": {"Garden": 2.37, "Harbour": 1.66, "Uptown": 1.59}, "units": 2629}, {"name": "Iced Mocha", "cat": "Cold Coffee", "side": "drink", "price": {"Garden": 6.25, "Harbour": 6.56, "Uptown": 6.0}, "cost": {"Garden": 3.19, "Harbour": 2.23, "Uptown": 2.14}, "units": 1114}, {"name": "Chai Latte", "cat": "Matcha & Tea", "side": "drink", "price": {"Garden": 5.25, "Harbour": 5.51, "Uptown": 5.04}, "cost": {"Garden": 2.12, "Harbour": 1.48, "Uptown": 1.42}, "units": 1123}, {"name": "Classic Matcha", "cat": "Matcha & Tea", "side": "drink", "price": {"Garden": 6.45, "Harbour": 6.77, "Uptown": 6.19}, "cost": {"Garden": 3.25, "Harbour": 2.27, "Uptown": 2.18}, "units": 1963}, {"name": "English Breakfast Tea", "cat": "Matcha & Tea", "side": "drink", "price": {"Garden": 3.45, "Harbour": 3.62, "Uptown": 3.31}, "cost": {"Garden": 0.82, "Harbour": 0.57, "Uptown": 0.55}, "units": 473}, {"name": "Iced Matcha", "cat": "Matcha & Tea", "side": "drink", "price": {"Garden": 6.85, "Harbour": 7.19, "Uptown": 6.58}, "cost": {"Garden": 3.59, "Harbour": 2.51, "Uptown": 2.41}, "units": 2322}, {"name": "Mint Tea", "cat": "Matcha & Tea", "side": "drink", "price": {"Garden": 3.65, "Harbour": 3.83, "Uptown": 3.5}, "cost": {"Garden": 0.9, "Harbour": 0.63, "Uptown": 0.6}, "units": 631}, {"name": "Strawberry Matcha", "cat": "Matcha & Tea", "side": "drink", "price": {"Garden": 7.65, "Harbour": 8.03, "Uptown": 7.34}, "cost": {"Garden": 4.55, "Harbour": 3.18, "Uptown": 3.05}, "units": 1486}, {"name": "Fresh Orange Juice", "cat": "Cold Drinks", "side": "drink", "price": {"Garden": 5.75, "Harbour": 6.04, "Uptown": 5.52}, "cost": {"Garden": 3.03, "Harbour": 2.12, "Uptown": 2.04}, "units": 1003}, {"name": "Lemonade", "cat": "Cold Drinks", "side": "drink", "price": {"Garden": 4.65, "Harbour": 4.88, "Uptown": 4.46}, "cost": {"Garden": 1.67, "Harbour": 1.17, "Uptown": 1.12}, "units": 1042}, {"name": "Peach Iced Tea", "cat": "Cold Drinks", "side": "drink", "price": {"Garden": 4.45, "Harbour": 4.67, "Uptown": 4.27}, "cost": {"Garden": 1.64, "Harbour": 1.15, "Uptown": 1.1}, "units": 1187}, {"name": "Sparkling Water", "cat": "Cold Drinks", "side": "drink", "price": {"Garden": 2.75, "Harbour": 2.89, "Uptown": 2.64}, "cost": {"Garden": 1.93, "Harbour": 1.35, "Uptown": 1.3}, "units": 1065}, {"name": "Still Water", "cat": "Cold Drinks", "side": "drink", "price": {"Garden": 1.95, "Harbour": 2.05, "Uptown": 1.87}, "cost": {"Garden": 0.93, "Harbour": 0.65, "Uptown": 0.62}, "units": 1193}, {"name": "Almond Croissant", "cat": "Bakery", "side": "food", "price": {"Garden": 4.85, "Harbour": 5.09, "Uptown": 4.66}, "cost": {"Garden": 2.73, "Harbour": 1.91, "Uptown": 1.83}, "units": 1184}, {"name": "Banana Bread", "cat": "Bakery", "side": "food", "price": {"Garden": 4.45, "Harbour": 4.67, "Uptown": 4.27}, "cost": {"Garden": 2.25, "Harbour": 1.57, "Uptown": 1.51}, "units": 1258}, {"name": "Blueberry Muffin", "cat": "Bakery", "side": "food", "price": {"Garden": 3.95, "Harbour": 4.15, "Uptown": 3.79}, "cost": {"Garden": 1.87, "Harbour": 1.31, "Uptown": 1.26}, "units": 930}, {"name": "Butter Croissant", "cat": "Bakery", "side": "food", "price": {"Garden": 3.65, "Harbour": 3.83, "Uptown": 3.5}, "cost": {"Garden": 1.63, "Harbour": 1.14, "Uptown": 1.09}, "units": 2238}, {"name": "Chocolate Cookie", "cat": "Bakery", "side": "food", "price": {"Garden": 3.15, "Harbour": 3.31, "Uptown": 3.02}, "cost": {"Garden": 1.3, "Harbour": 0.91, "Uptown": 0.87}, "units": 1667}, {"name": "Chocolate Croissant", "cat": "Bakery", "side": "food", "price": {"Garden": 4.25, "Harbour": 4.46, "Uptown": 4.08}, "cost": {"Garden": 2.26, "Harbour": 1.58, "Uptown": 1.52}, "units": 1558}, {"name": "Cinnamon Roll", "cat": "Bakery", "side": "food", "price": {"Garden": 5.15, "Harbour": 5.41, "Uptown": 4.94}, "cost": {"Garden": 3.2, "Harbour": 2.24, "Uptown": 2.15}, "units": 1515}, {"name": "Pistachio Cookie", "cat": "Bakery", "side": "food", "price": {"Garden": 3.45, "Harbour": 3.62, "Uptown": 3.31}, "cost": {"Garden": 1.69, "Harbour": 1.18, "Uptown": 1.13}, "units": 1331}, {"name": "Avocado Toast", "cat": "Breakfast", "side": "food", "price": {"Garden": 9.45, "Harbour": 9.92, "Uptown": 9.07}, "cost": {"Garden": 5.98, "Harbour": 4.18, "Uptown": 4.01}, "units": 905}, {"name": "Egg Sandwich", "cat": "Breakfast", "side": "food", "price": {"Garden": 8.15, "Harbour": 8.56, "Uptown": 7.82}, "cost": {"Garden": 4.45, "Harbour": 3.11, "Uptown": 2.99}, "units": 994}, {"name": "Granola Yoghurt", "cat": "Breakfast", "side": "food", "price": {"Garden": 7.85, "Harbour": 8.24, "Uptown": 7.54}, "cost": {"Garden": 4.75, "Harbour": 3.32, "Uptown": 3.19}, "units": 576}, {"name": "Brownie", "cat": "Desserts", "side": "food", "price": {"Garden": 5.15, "Harbour": 5.41, "Uptown": 4.94}, "cost": {"Garden": 3.39, "Harbour": 2.37, "Uptown": 2.28}, "units": 1321}, {"name": "Cheesecake Slice", "cat": "Desserts", "side": "food", "price": {"Garden": 6.75, "Harbour": 7.09, "Uptown": 6.48}, "cost": {"Garden": 4.4, "Harbour": 3.08, "Uptown": 2.96}, "units": 1216}, {"name": "Frozen Yoghurt Cup", "cat": "Desserts", "side": "food", "price": {"Garden": 6.15, "Harbour": 6.46, "Uptown": 5.9}, "cost": {"Garden": 3.85, "Harbour": 2.69, "Uptown": 2.58}, "units": 1120}, {"name": "Tiramisu Cup", "cat": "Desserts", "side": "food", "price": {"Garden": 6.55, "Harbour": 6.88, "Uptown": 6.29}, "cost": {"Garden": 4.08, "Harbour": 2.85, "Uptown": 2.74}, "units": 1034}, {"name": "Chicken Pesto Sandwich", "cat": "Sandwiches", "side": "food", "price": {"Garden": 10.75, "Harbour": 11.29, "Uptown": 10.32}, "cost": {"Garden": 7.39, "Harbour": 5.17, "Uptown": 4.96}, "units": 1146}, {"name": "Halloumi Wrap", "cat": "Sandwiches", "side": "food", "price": {"Garden": 9.95, "Harbour": 10.45, "Uptown": 9.55}, "cost": {"Garden": 5.92, "Harbour": 4.14, "Uptown": 3.97}, "units": 971}, {"name": "Tuna Sandwich", "cat": "Sandwiches", "side": "food", "price": {"Garden": 8.85, "Harbour": 9.29, "Uptown": 8.5}, "cost": {"Garden": 5.33, "Harbour": 3.73, "Uptown": 3.58}, "units": 721}, {"name": "Turkey & Cheese Sandwich", "cat": "Sandwiches", "side": "food", "price": {"Garden": 9.65, "Harbour": 10.13, "Uptown": 9.26}, "cost": {"Garden": 6.75, "Harbour": 4.72, "Uptown": 4.53}, "units": 1070}, {"name": "Chicken Salad Bowl", "cat": "Meals", "side": "food", "price": {"Garden": 12.45, "Harbour": 13.07, "Uptown": 11.95}, "cost": {"Garden": 8.08, "Harbour": 5.65, "Uptown": 5.42}, "units": 552}, {"name": "Quinoa Bowl", "cat": "Meals", "side": "food", "price": {"Garden": 11.65, "Harbour": 12.23, "Uptown": 11.18}, "cost": {"Garden": 7.04, "Harbour": 4.92, "Uptown": 4.72}, "units": 502}, {"name": "Soup of the Day", "cat": "Meals", "side": "food", "price": {"Garden": 7.15, "Harbour": 7.51, "Uptown": 6.86}, "cost": {"Garden": 3.99, "Harbour": 2.79, "Uptown": 2.68}, "units": 450}], "byCat": {"Hot Coffee": {"Q": 0.1988, "s": {"Almond Croissant": 0.04705, "Banana Bread": 0.05028, "Blueberry Muffin": 0.03755, "Butter Croissant": 0.08995, "Chocolate Cookie": 0.06903, "Chocolate Croissant": 0.06145, "Cinnamon Roll": 0.06019, "Pistachio Cookie": 0.05367, "Avocado Toast": 0.05102, "Egg Sandwich": 0.05594, "Granola Yoghurt": 0.03314, "Brownie": 0.0422, "Cheesecake Slice": 0.03994, "Frozen Yoghurt Cup": 0.0359, "Tiramisu Cup": 0.03234, "Chicken Pesto Sandwich": 0.0469, "Halloumi Wrap": 0.04058, "Tuna Sandwich": 0.02866, "Turkey & Cheese Sandwich": 0.04325, "Chicken Salad Bowl": 0.02941, "Quinoa Bowl": 0.02715, "Soup of the Day": 0.02442}}, "Cold Coffee": {"Q": 0.2157, "s": {"Almond Croissant": 0.04558, "Banana Bread": 0.04872, "Blueberry Muffin": 0.03638, "Butter Croissant": 0.08715, "Chocolate Cookie": 0.06688, "Chocolate Croissant": 0.05954, "Cinnamon Roll": 0.05831, "Pistachio Cookie": 0.052, "Avocado Toast": 0.0453, "Egg Sandwich": 0.04967, "Granola Yoghurt": 0.02943, "Brownie": 0.05069, "Cheesecake Slice": 0.04797, "Frozen Yoghurt Cup": 0.04312, "Tiramisu Cup": 0.03884, "Chicken Pesto Sandwich": 0.04646, "Halloumi Wrap": 0.0402, "Tuna Sandwich": 0.02839, "Turkey & Cheese Sandwich": 0.04284, "Chicken Salad Bowl": 0.02998, "Quinoa Bowl": 0.02767, "Soup of the Day": 0.02489}}, "Matcha & Tea": {"Q": 0.3767, "s": {"Almond Croissant": 0.07817, "Banana Bread": 0.08354, "Blueberry Muffin": 0.06238, "Butter Croissant": 0.14945, "Chocolate Cookie": 0.11469, "Chocolate Croissant": 0.10209, "Cinnamon Roll": 0.1, "Pistachio Cookie": 0.08917, "Avocado Toast": 0.01761, "Egg Sandwich": 0.01931, "Granola Yoghurt": 0.01144, "Brownie": 0.01936, "Cheesecake Slice": 0.01832, "Frozen Yoghurt Cup": 0.01647, "Tiramisu Cup": 0.01484, "Chicken Pesto Sandwich": 0.02134, "Halloumi Wrap": 0.01846, "Tuna Sandwich": 0.01304, "Turkey & Cheese Sandwich": 0.01968, "Chicken Salad Bowl": 0.01114, "Quinoa Bowl": 0.01028, "Soup of the Day": 0.00924}}, "Cold Drinks": {"Q": 0.2007, "s": {"Almond Croissant": 0.04478, "Banana Bread": 0.04786, "Blueberry Muffin": 0.03574, "Butter Croissant": 0.08561, "Chocolate Cookie": 0.0657, "Chocolate Croissant": 0.05849, "Cinnamon Roll": 0.05728, "Pistachio Cookie": 0.05108, "Avocado Toast": 0.05056, "Egg Sandwich": 0.05544, "Granola Yoghurt": 0.03284, "Brownie": 0.04844, "Cheesecake Slice": 0.04584, "Frozen Yoghurt Cup": 0.0412, "Tiramisu Cup": 0.03712, "Chicken Pesto Sandwich": 0.05134, "Halloumi Wrap": 0.04442, "Tuna Sandwich": 0.03138, "Turkey & Cheese Sandwich": 0.04735, "Chicken Salad Bowl": 0.02453, "Quinoa Bowl": 0.02265, "Soup of the Day": 0.02037}}, "Bakery": {"Q": 0.3255, "s": {"Americano": 0.06211, "Cappuccino": 0.09174, "Caramel Latte": 0.05769, "Espresso": 0.03731, "Flat White": 0.07393, "Spanish Latte": 0.06761, "Vanilla Latte": 0.07502, "Coffee Frappe": 0.03895, "Cold Brew": 0.06168, "Iced Americano": 0.06209, "Iced Latte": 0.11001, "Iced Mocha": 0.04473, "Chai Latte": 0.01808, "Classic Matcha": 0.03183, "English Breakfast Tea": 0.00752, "Iced Matcha": 0.03762, "Mint Tea": 0.01001, "Strawberry Matcha": 0.02306, "Fresh Orange Juice": 0.0158, "Lemonade": 0.01707, "Peach Iced Tea": 0.01947, "Sparkling Water": 0.01731, "Still Water": 0.01935}}, "Breakfast": {"Q": 0.2534, "s": {"Americano": 0.04093, "Cappuccino": 0.06046, "Caramel Latte": 0.03802, "Espresso": 0.02459, "Flat White": 0.04872, "Spanish Latte": 0.04456, "Vanilla Latte": 0.04944, "Coffee Frappe": 0.03018, "Cold Brew": 0.0478, "Iced Americano": 0.04812, "Iced Latte": 0.08525, "Iced Mocha": 0.03466, "Chai Latte": 0.03112, "Classic Matcha": 0.05477, "English Breakfast Tea": 0.01294, "Iced Matcha": 0.06473, "Mint Tea": 0.01722, "Strawberry Matcha": 0.03967, "Fresh Orange Juice": 0.04027, "Lemonade": 0.04351, "Peach Iced Tea": 0.04962, "Sparkling Water": 0.04412, "Still Water": 0.04931}}, "Desserts": {"Q": 0.274, "s": {"Americano": 0.03902, "Cappuccino": 0.05764, "Caramel Latte": 0.03625, "Espresso": 0.02344, "Flat White": 0.04645, "Spanish Latte": 0.04248, "Vanilla Latte": 0.04713, "Coffee Frappe": 0.03097, "Cold Brew": 0.04904, "Iced Americano": 0.04937, "Iced Latte": 0.08747, "Iced Mocha": 0.03557, "Chai Latte": 0.03855, "Classic Matcha": 0.06785, "English Breakfast Tea": 0.01603, "Iced Matcha": 0.08019, "Mint Tea": 0.02133, "Strawberry Matcha": 0.04915, "Fresh Orange Juice": 0.03232, "Lemonade": 0.03492, "Peach Iced Tea": 0.03983, "Sparkling Water": 0.03542, "Still Water": 0.03958}}, "Sandwiches": {"Q": 0.3535, "s": {"Americano": 0.03153, "Cappuccino": 0.04657, "Caramel Latte": 0.02928, "Espresso": 0.01894, "Flat White": 0.03753, "Spanish Latte": 0.03432, "Vanilla Latte": 0.03808, "Coffee Frappe": 0.0224, "Cold Brew": 0.03547, "Iced Americano": 0.03571, "Iced Latte": 0.06326, "Iced Mocha": 0.02572, "Chai Latte": 0.0233, "Classic Matcha": 0.04102, "English Breakfast Tea": 0.00969, "Iced Matcha": 0.04848, "Mint Tea": 0.0129, "Strawberry Matcha": 0.02971, "Fresh Orange Juice": 0.07387, "Lemonade": 0.07981, "Peach Iced Tea": 0.09102, "Sparkling Water": 0.08094, "Still Water": 0.09046}}, "Meals": {"Q": 0.3484, "s": {"Americano": 0.0326, "Cappuccino": 0.04815, "Caramel Latte": 0.03028, "Espresso": 0.01958, "Flat White": 0.0388, "Spanish Latte": 0.03549, "Vanilla Latte": 0.03938, "Coffee Frappe": 0.02107, "Cold Brew": 0.03337, "Iced Americano": 0.0336, "Iced Latte": 0.05952, "Iced Mocha": 0.0242, "Chai Latte": 0.02317, "Classic Matcha": 0.04078, "English Breakfast Tea": 0.00963, "Iced Matcha": 0.04819, "Mint Tea": 0.01282, "Strawberry Matcha": 0.02954, "Fresh Orange Juice": 0.07454, "Lemonade": 0.08053, "Peach Iced Tea": 0.09184, "Sparkling Water": 0.08167, "Still Water": 0.09127}}}, "assumptions": {"base_acceptance": 0.06, "discount_lift_per_10pct": 0.1, "switch_rate": 0.1, "offer_rate": 0.8}, "guardrails": {"discount_grid": [0.0, 0.05, 0.1, 0.15], "min_margin_after_discount": 0.4, "min_expected_gain_usd": 0.05, "price_rounding_usd": 0.05, "max_addon_price_ratio": 2.5}, "priorStrength": 30, "facts": {"orders": 33887, "drink_only": 0.4091539528432732, "food_only": 0.308643432584767, "annual_orders": 68335.66298342541}};
+const BR = ["Harbour", "Garden", "Uptown"];
+const BR_W = { Harbour: 0.48, Garden: 0.33, Uptown: 0.19 };
+const A = P.assumptions, G = P.guardrails, D = G.discount_grid;
+const ITEMS = Object.fromEntries(P.items.map(i => [i.name, i]));
+const SIDE = { drink: P.items.filter(i => i.side === "drink"), food: P.items.filter(i => i.side === "food") };
+const CATS = [...new Set(P.items.map(i => i.cat))];
+const $ = id => document.getElementById(id);
+const fmt = v => "$" + v.toFixed(2);
+const fmtk = v => (v < 0 ? "−$" : "$") + Math.abs(v / 1000).toFixed(1) + "k";
+
+// ---------- state ----------
+const S = { branch: "Harbour", hour: 9, basket: [], declined: [], mode: "v2", cat: "All", receipt: 4127,
+            shown: 0, acc: 0, gp: 0, current: null, counts: {} };
+try { const c = JSON.parse(localStorage.getItem("sp-counts") || "{}"); if (c && typeof c === "object") S.counts = c; } catch (e) {}
+function saveCounts() { try { localStorage.setItem("sp-counts", JSON.stringify(S.counts)); } catch (e) {} }
+
+// ---------- random ----------
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function randn(r) { let u = 0, v = 0; while (u === 0) u = r(); while (v === 0) v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function gamma(k, r) { if (k < 1) return gamma(k + 1, r) * Math.pow(r(), 1 / k); const d = k - 1 / 3, c = 1 / Math.sqrt(9 * d);
+  for (;;) { let x, v; do { x = randn(r); v = 1 + c * x; } while (v <= 0); v = v * v * v; const u = r();
+    if (u < 1 - 0.0331 * x ** 4 || Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v; } }
+function betaDraw(a, b, r) { const x = gamma(a, r), y = gamma(b, r); return x / (x + y); }
+const rng = mulberry32(Date.now() % 2 ** 31);
+
+// ---------- engine (same formula as src/storiespair/engine.py) ----------
+function daypart(h) { return h < 11 ? "Morning" : h < 15 ? "Midday" : h < 19 ? "Afternoon" : "Evening"; }
+const PAIR_NAME = { Morning: "Morning Pairing", Midday: "Lunch Pairing", Afternoon: "Afternoon Pairing", Evening: "Evening Pairing" };
+
+function score(branch, first, declined, opts = {}) {
+  const a = opts.assume || A, counts = opts.counts || S.counts, r = opts.rng || rng, mode = opts.mode || S.mode;
+  const f = ITEMS[first], target = f.side === "drink" ? "food" : "drink", pool = SIDE[target];
+  const bc = P.byCat[f.cat], Q = bc.Q, K = pool.length;
+  const firstPrice = f.price[branch];
+  let eAll = 0; for (const it of pool) eAll += bc.s[it.name] * (it.price[branch] - it.cost[branch]);
+  const out = [];
+  for (const it of pool) {
+    const s = bc.s[it.name], p = it.price[branch], c = it.cost[branch], gFull = p - c;
+    const gOther = (eAll - s * gFull) / Math.max(1 - s, 1e-9);
+    for (const d of D) {
+      const op = d > 0 ? Math.round(p * (1 - d) / G.price_rounding_usd) * G.price_rounding_usd : p;
+      const gp = op - c;
+      const acc = Math.min(1, a.base_acceptance * K * s * (1 + a.discount_lift_per_10pct * d / 0.10));
+      const theta0 = Q * s + Q * (1 - s) * a.switch_rate + (1 - Q) * acc;
+      const key = f.cat + "|" + it.name + "|" + d;
+      const [na, nb] = counts[key] || [0, 0];
+      const alpha = theta0 * P.priorStrength + na, beta = (1 - theta0) * P.priorStrength + nb;
+      const mean = alpha / (alpha + beta);
+      const other = Q * (1 - s) * (1 - a.switch_rate) * gOther, base = Q * eAll;
+      const gainV1 = theta0 * gp + other - base;
+      const gainV2 = mean * gp + other - base;
+      const draw = mode === "v2" ? betaDraw(alpha, beta, r) * gp + other - base : gainV1;
+      const allowed = !declined.includes(it.name) && op <= G.max_addon_price_ratio * firstPrice && gp / op >= G.min_margin_after_discount;
+      out.push({ item: it.name, cat: it.cat, d, op, p, gp, s, Q, theta0, mean, n: na + nb, key, gainV1, gainV2, draw, allowed,
+                 gain: mode === "v2" ? gainV2 : gainV1, other, base });
+    }
+  }
+  return out;
+}
+function decide(branch, first, declined, opts = {}) {
+  const c = score(branch, first, declined, opts).filter(x => x.allowed);
+  c.sort((x, y) => y.draw - x.draw);
+  const best = c[0];
+  return { best: best && best.gain >= G.min_expected_gain_usd ? best : null, all: c };
+}
+
+// ---------- till UI ----------
+function renderBranches() {
+  $("branchSeg").innerHTML = BR.map(b => `<button aria-pressed="${b === S.branch}" data-b="${b}">${b}</button>`).join("");
+  $("branchSeg").querySelectorAll("button").forEach(btn => btn.onclick = () => { S.branch = btn.dataset.b; renderBranches(); renderMenu(); refresh(); });
+}
+function renderMenu() {
+  $("cats").innerHTML = ["All", ...CATS].map(c => `<button aria-pressed="${c === S.cat}" data-c="${c}">${c}</button>`).join("");
+  $("cats").querySelectorAll("button").forEach(b => b.onclick = () => { S.cat = b.dataset.c; renderMenu(); });
+  const list = P.items.filter(i => S.cat === "All" || i.cat === S.cat);
+  $("menu").innerHTML = list.map(i => `<button class="item ${i.side}" data-n="${i.name}"><span class="n">${i.name}</span><span class="p">${fmt(i.price[S.branch])}</span></button>`).join("");
+  $("menu").querySelectorAll(".item").forEach(b => b.onclick = () => ring(b.dataset.n));
+}
+function ring(name) { S.basket.push(name); refresh(); }
+function refresh() {
+  const h = S.hour;
+  $("hourLbl").textContent = String(h).padStart(2, "0") + ":00";
+  $("tkNo").textContent = "Receipt SP-" + S.receipt;
+  $("tkWhere").textContent = "Stories " + S.branch + " · " + daypart(h);
+  const lines = $("tkLines");
+  if (!S.basket.length) lines.innerHTML = `<div class="tk-empty">No items yet. Ring something from the menu.</div>`;
+  else lines.innerHTML = S.basket.map((n, i) => `<div class="tk-line"><span>${n}</span><span>${fmt(ITEMS[n].price[S.branch])}<button class="x" aria-label="Remove ${n}" data-i="${i}">×</button></span></div>`).join("");
+  lines.querySelectorAll(".x").forEach(b => b.onclick = () => { S.basket.splice(+b.dataset.i, 1); S.declined = []; refresh(); });
+  $("tkTotal").textContent = fmt(S.basket.reduce((t, n) => t + ITEMS[n].price[S.branch], 0));
+  renderOffer();
+}
+function renderOffer() {
+  const el = $("offer");
+  S.current = null;
+  if (!S.basket.length) { el.innerHTML = ""; renderReasoning(null); return; }
+  const sides = new Set(S.basket.map(n => ITEMS[n].side));
+  if (sides.size > 1) {
+    el.innerHTML = `<div class="offer quiet"><div class="o-top"><span class="o-name">Pair complete</span></div><div class="o-body">This order already has a drink and food. The engine stays quiet.</div></div>`;
+    renderReasoning(null, "Pair complete: no suggestion."); return;
+  }
+  const first = S.basket[0];
+  // re-decide only when the order changes, so Thompson sampling does not reshuffle on every redraw
+  const sig = [S.branch, S.mode, S.basket.join(","), S.declined.join(","), S.receipt].join("|");
+  const fresh = sig !== S.sig;
+  const res = fresh ? decide(S.branch, first, S.declined.concat(S.basket)) : S.lastRes;
+  S.sig = sig; S.lastRes = res;
+  renderReasoning(res, null, first);
+  if (!res.best) { el.innerHTML = `<div class="offer quiet"><div class="o-top"><span class="o-name">No suggestion</span></div><div class="o-body">Nothing left clears the $${G.min_expected_gain_usd.toFixed(2)} expected-gain bar for this order.</div></div>`; return; }
+  const b = res.best; S.current = { ...b, first };
+  const total = ITEMS[first].price[S.branch] + b.op;
+  const art = /^[aeiou]/i.test(b.item) ? "an" : "a";
+  const save = b.d > 0 ? ` · save ${fmt(b.p - b.op)}` : "";
+  el.innerHTML = `<div class="offer">
+    <div class="o-top"><span class="o-name">${PAIR_NAME[daypart(S.hour)]}</span><span class="pill ${S.mode}">${S.mode === "v2" ? "v2 learning" : "v1 measured"}</span></div>
+    <div class="o-body">
+      <div class="o-pair">${first} + ${b.item}</div>
+      <div class="o-price">${fmt(total)} together · add-on ${fmt(b.op)}${save}</div>
+      <div class="o-say">“Would you like to make it a ${PAIR_NAME[daypart(S.hour)]}? Your ${first.toLowerCase()} with ${art} ${b.item.toLowerCase()}, ${fmt(total)} together.”</div>
+      <div class="o-actions"><button class="btn primary" id="accept">Customer accepted</button><button class="btn" id="decline">Customer declined</button></div>
+    </div></div>`;
+  if (fresh) { S.shown++; updateSession(); }
+  $("accept").onclick = () => respond(true);
+  $("decline").onclick = () => respond(false);
+}
+function respond(ok) {
+  const c = S.current; if (!c) return;
+  const k = c.key; S.counts[k] = S.counts[k] || [0, 0]; S.counts[k][ok ? 0 : 1] += 1; saveCounts();
+  if (ok) { S.acc++; S.gp += c.gp; S.basket.push(c.item); toast("Added " + c.item + " · logged as accepted"); }
+  else { S.declined.push(c.item); toast("Logged as declined · " + c.item + " will not be offered again"); }
+  updateSession(); refresh();
+}
+function updateSession() {
+  $("sShown").textContent = S.shown; $("sAcc").textContent = S.acc;
+  $("sRate").textContent = S.shown ? Math.round(100 * S.acc / S.shown) + "%" : "–";
+  $("sGp").textContent = fmt(S.gp);
+}
+function renderReasoning(res, msg, first) {
+  if (!res) {
+    $("kQ").textContent = "–"; $("kGain").textContent = "–"; $("kArms").textContent = "–";
+    $("cand").innerHTML = `<div class="hint">${msg || "Ring an item to see the engine's options."}</div>`; $("why").textContent = ""; $("belief").hidden = true; return;
+  }
+  const f = ITEMS[first];
+  const all = score(S.branch, first, S.declined.concat(S.basket), { mode: "v1" }).filter(x => x.allowed);
+  // best discount per item by the current mode's expected gain
+  const best = {}; for (const x of all) { const g = S.mode === "v2" ? x.gainV2 : x.gainV1; if (!best[x.item] || g > best[x.item].g) best[x.item] = { ...x, g }; }
+  const top = Object.values(best).sort((a, b) => b.g - a.g).slice(0, 6);
+  const mx = Math.max(...top.map(t => t.g), 0.01);
+  $("kQ").textContent = Math.round(P.byCat[f.cat].Q * 100) + "%";
+  $("kGain").textContent = res.best ? fmt(res.best.gain) : "–";
+  $("kArms").textContent = all.length;
+  const chosen = res.best ? res.best.item : null;
+  $("cand").innerHTML = top.map(t => `<div class="crow ${t.item === chosen ? "best" : ""}">
+      <div class="lbl"><span>${t.item}${t.d > 0 ? " · " + Math.round(t.d * 100) + "% off" : ""}</span><span style="color:var(--ink-3)">${t.cat}</span></div>
+      <div class="g">${fmt(t.g)}</div>
+      <div class="bar"><i style="width:${Math.max(2, 100 * t.g / mx)}%"></i></div></div>`).join("");
+  if (res.best) {
+    const b = res.best, catShare = Object.entries(P.byCat[f.cat].s).filter(([n]) => ITEMS[n].cat === b.cat).reduce((t, [, v]) => t + v, 0);
+    $("why").innerHTML = `When ${f.cat.toLowerCase()} is rung first, ${Math.round(catShare * 100)}% of customers who add something pick ${b.cat.toLowerCase()}. The ${b.item} earns <span class="num">${fmt(b.gp)}</span> gross profit per acceptance at ${S.branch}${b.d > 0 ? " even after the discount" : ""}. ${S.mode === "v2" ? "v2 picked it by sampling its current belief, so close options sometimes get tested." : "v1 picks the highest expected gain under the assumed acceptance."}`;
+    renderBelief(b);
+  } else { $("why").textContent = "No option clears the minimum expected gain."; $("belief").hidden = true; }
+}
+function renderBelief(b) {
+  const el = $("belief"); el.hidden = false;
+  const [na, nb] = S.counts[b.key] || [0, 0];
+  const a0 = b.theta0 * P.priorStrength, b0 = (1 - b.theta0) * P.priorStrength;
+  const pts = (a, bb) => { const xs = []; for (let i = 1; i < 120; i++) { const x = i / 120 * 0.8; xs.push([x, Math.pow(x, a - 1) * Math.pow(1 - x, bb - 1)]); } const m = Math.max(...xs.map(p => p[1])); return xs.map(([x, y]) => [x, y / m]); };
+  const W = 320, H = 86, sx = x => 8 + x / 0.8 * (W - 16), sy = y => H - 18 - y * (H - 30);
+  const path = arr => arr.map((p, i) => (i ? "L" : "M") + sx(p[0]).toFixed(1) + " " + sy(p[1]).toFixed(1)).join(" ");
+  el.innerHTML = `<div class="eyebrow">Belief: how often “${b.item}” is taken after ${ITEMS[S.basket[0]].cat.toLowerCase()}</div>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Prior and current belief about take rate">
+      <path d="${path(pts(a0, b0))}" fill="none" stroke="var(--v1)" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <path d="${path(pts(a0 + na, b0 + nb))}" fill="none" stroke="var(--v2)" stroke-width="2"/>
+      <line x1="8" x2="${W - 8}" y1="${H - 18}" y2="${H - 18}" stroke="var(--line)"/>
+      ${[0, .2, .4, .6, .8].map(x => `<text x="${sx(x)}" y="${H - 4}" text-anchor="middle" style="fill:var(--ink-3);font-size:10px;font-family:var(--font-mono)">${x * 100}%</text>`).join("")}
+    </svg>
+    <div class="note" style="margin-top:2px">Dashed: starting belief from the data (${Math.round(b.theta0 * 100)}%). Solid: now, after ${na + nb} logged response${na + nb === 1 ? "" : "s"} here (${Math.round(100 * (a0 + na) / (a0 + b0 + na + nb))}%).</div>`;
+}
+function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("on"), 1800); }
+
+// ---------- learning simulation ----------
+let simSeed = 7;
+function hiddenTruth(seed) {
+  const r = mulberry32(seed * 9973 + 1);
+  const lo = (a, b) => a + r() * (b - a);
+  const t = { base_acceptance: lo(0.04, 0.12), discount_lift_per_10pct: lo(0, 0.5), switch_rate: lo(0, 0.25), mult: {} };
+  for (const c of CATS) for (const it of P.items) t.mult[c + "|" + it.name] = Math.exp(0.6 * randn(r) - 0.18);
+  return t;
+}
+function trueTake(x, truth, f) {
+  const K = SIDE[ITEMS[x.item].side].length;
+  const acc = Math.min(1, truth.base_acceptance * K * x.s * truth.mult[f.cat + "|" + x.item] * (1 + truth.discount_lift_per_10pct * x.d / 0.10));
+  return x.Q * x.s + x.Q * (1 - x.s) * truth.switch_rate + (1 - x.Q) * acc;
+}
+function runSim() {
+  const truth = hiddenTruth(simSeed), r = mulberry32(simSeed * 31 + 5), r2 = mulberry32(simSeed * 17 + 3);
+  const counts = {}, N = 5200, perDay = 187;
+  const weights = P.items.map(i => i.units), wsum = weights.reduce((a, b) => a + b, 0);
+  const pick = () => { let u = r() * wsum; for (let i = 0; i < weights.length; i++) { u -= weights[i]; if (u <= 0) return P.items[i].name; } return P.items[0].name; };
+  const pickB = () => { const u = r(); return u < BR_W.Harbour ? "Harbour" : u < BR_W.Harbour + BR_W.Garden ? "Garden" : "Uptown"; };
+  const cum = { v1: [0], v2: [0], combo: [0] }; let tot = { v1: 0, v2: 0, combo: 0 }, accV2 = 0;
+  const realised = (x, taken, pt) => (taken ? x.gp : x.other / Math.max(1 - pt, 1e-9)) - x.base;
+  for (let n = 0; n < N; n++) {
+    const first = pick(), branch = pickB(), f = ITEMS[first], u = r();
+    const v1 = decide(branch, first, [], { mode: "v1", counts: {} }).best;
+    const v2 = decide(branch, first, [], { mode: "v2", counts, rng: r2 }).best;
+    const allV1 = score(branch, first, [], { mode: "v1", counts: {} }).filter(x => x.allowed && x.d === 0.1);
+    const popular = allV1.sort((a, b) => b.s - a.s)[0];
+    for (const [k, x] of [["v1", v1], ["v2", v2], ["combo", popular]]) {
+      if (!x) continue;
+      const pt = trueTake(x, truth, f), taken = u < pt;
+      tot[k] += realised(x, taken, pt) * A.offer_rate;
+      if (k === "v2") { counts[x.key] = counts[x.key] || [0, 0]; counts[x.key][taken ? 0 : 1]++; if (taken) accV2++; }
+    }
+    if ((n + 1) % perDay === 0 || n === N - 1) { cum.v1.push(tot.v1); cum.v2.push(tot.v2); cum.combo.push(tot.combo); }
+  }
+  drawSim(cum, perDay, N);
+  $("lV2").textContent = fmt(tot.v2); $("lV1").textContent = fmt(tot.v1);
+  const up = tot.v1 !== 0 ? (tot.v2 / tot.v1 - 1) * 100 : 0;
+  $("lUp").textContent = (up >= 0 ? "+" : "") + up.toFixed(0) + "%";
+  $("lAcc").textContent = Math.round(100 * accV2 / N) + "%";
+  $("lWhy").innerHTML = `Hidden truth this run: average acceptance ${Math.round(truth.base_acceptance * 100)}%, each 10% off lifts acceptance by ${Math.round(truth.discount_lift_per_10pct * 100)}%, and individual items deviate from the data-based guess by up to ±60%. Over four weeks v2 earned <b class="num">${fmt(tot.v2)}</b> of extra gross profit against <b class="num">${fmt(tot.v1)}</b> for v1. Annualised from four weeks, that is about <b class="num">${fmtk(tot.v2 * 13)}</b> vs <b class="num">${fmtk(tot.v1 * 13)}</b>, before v2 has finished learning.`;
+}
+function drawSim(cum, perDay, N) {
+  const W = 640, H = 280, L = 54, R = 14, T = 14, B = 34, n = cum.v1.length - 1;
+  const all = [...cum.v1, ...cum.v2, ...cum.combo], mx = Math.max(...all, 1), mn = Math.min(0, ...all);
+  const sx = i => L + i / n * (W - L - R), sy = v => T + (1 - (v - mn) / (mx - mn)) * (H - T - B);
+  const path = arr => arr.map((v, i) => (i ? "L" : "M") + sx(i).toFixed(1) + " " + sy(v).toFixed(1)).join(" ");
+  const step = Math.pow(10, Math.floor(Math.log10(mx || 1))), ticks = [];
+  for (let v = 0; v <= mx; v += step * (mx / step > 5 ? 2 : 1)) ticks.push(v);
+  $("simChart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative extra gross profit by engine">
+    ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${sy(v)}" y2="${sy(v)}" stroke="var(--line)"/><text x="${L - 8}" y="${sy(v) + 4}" text-anchor="end">$${v >= 1000 ? (v / 1000).toFixed(1) + "k" : v.toFixed(0)}</text>`).join("")}
+    ${[0, 7, 14, 21, 28].filter(d => d <= n).map(d => `<text x="${sx(d)}" y="${H - 12}" text-anchor="middle">day ${d}</text>`).join("")}
+    <path d="${path(cum.combo)}" fill="none" stroke="var(--warn)" stroke-width="2"/>
+    <path d="${path(cum.v1)}" fill="none" stroke="var(--v1)" stroke-width="2"/>
+    <path d="${path(cum.v2)}" fill="none" stroke="var(--v2)" stroke-width="2.6"/>
+    <circle cx="${sx(n)}" cy="${sy(cum.v2[n])}" r="4" fill="var(--v2)"/>
+  </svg>`;
+}
+
+// ---------- business chart ----------
+function drawBiz() {
+  const rows = [["Stories Pair v1 (measured)", 16811, "var(--v2)"], ["Suggest the best-seller", 14608, "var(--v1)"], ["Classic 10% combo", 12249, "var(--warn)"], ["Suggest the highest-profit item", 11236, "var(--v1)"]];
+  const W = 640, rowH = 34, L = 210, H = rows.length * rowH + 10, mx = 18000;
+  $("bizChart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Estimated extra gross profit per year by policy">
+    ${rows.map(([n, v, c], i) => `<text x="${L - 10}" y="${i * rowH + 22}" text-anchor="end" style="fill:var(--ink)">${n}</text>
+      <rect x="${L}" y="${i * rowH + 8}" width="${(W - L - 70) * v / mx}" height="20" rx="3" fill="${c}"/>
+      <text x="${L + (W - L - 70) * v / mx + 8}" y="${i * rowH + 22}" style="font-family:var(--font-mono)">$${(v / 1000).toFixed(1)}k</text>`).join("")}
+  </svg>`;
+}
+
+// ---------- wiring ----------
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", x === b));
+  ["till", "learn", "biz"].forEach(v => $("view-" + v).hidden = v !== b.dataset.view);
+  if (b.dataset.view === "learn" && !$("simChart").innerHTML) runSim();
+});
+$("m1").onclick = () => { S.mode = "v1"; $("m1").setAttribute("aria-pressed", true); $("m2").setAttribute("aria-pressed", false); refresh(); };
+$("m2").onclick = () => { S.mode = "v2"; $("m2").setAttribute("aria-pressed", true); $("m1").setAttribute("aria-pressed", false); refresh(); };
+$("hour").oninput = e => { S.hour = +e.target.value; refresh(); };
+$("newOrder").onclick = () => { S.basket = []; S.declined = []; S.receipt++; refresh(); };
+$("simRun").onclick = () => runSim();
+$("simReset").onclick = () => { simSeed = Math.floor(Math.random() * 1e6); runSim(); };
+
+renderBranches(); renderMenu();
+S.basket = ["Cappuccino"]; refresh();
+drawBiz();
+</script>
