@@ -10,7 +10,19 @@
 
 ## Conclusion in one paragraph
 
-**72% of Stories' orders are half a pair** (40.9% drink-only, 30.9% food-only). We tested what the data can actually support before building anything. Classic "people who bought X also bought Y" analysis finds nothing, but when an order *does* pair, the **category** of the add-on is strongly predictable (a matcha or tea rung first is followed by bakery 78% of the time; a sandwich or meal by a cold drink 41% of the time, vs 18% overall). Below the category level, the specific product, the customer's loyalty ID, the time of day and the branch add nothing that survives testing on unseen months, and discounts did not change baskets. **Stories Pair** uses exactly that: when the first item is rung, it suggests the item from the other side with the highest *expected incremental gross profit* at that branch, net of the customers who would have bought it anyway. The whole engine compiles to a **135-row lookup table** a POS can use tomorrow. At base assumptions it adds an estimated **~$17k of gross profit a year (P10–P90: $12k–$27k)**, 15% more than suggesting the best-seller and 37% more than a classic 10%-off combo, which would also hand ~$3.9k a year in discounts to customers who would have paid full price. The one number that matters and cannot be measured from history, **acceptance**, is measured by a 2-week logging pilot, then confirmed by a 6-week odd/even-receipt A/B test. From then on, **Stories Pair v2**, a Thompson-sampling bandit, learns acceptance from every accept and decline; in simulation across 30 hidden customer truths it earns **27% more than the fixed engine in its first year** and beats the best-seller rule and the classic combo in all 30.
+**72% of Stories' orders are half a pair** (40.9% drink-only, 30.9% food-only). We tested what the data can actually support before building anything. Classic "people who bought X also bought Y" analysis finds nothing, but when an order *does* pair, the **category** of the add-on is strongly predictable (a matcha or tea rung first is followed by bakery 78% of the time; a sandwich or meal by a cold drink 41% of the time, vs 18% overall). Below the category level, the specific product, the customer's loyalty ID, the time of day and the branch add nothing that survives testing on unseen months, and discounted drinks were not associated with more pairing. **Stories Pair** uses exactly that: when the first item is rung, it suggests the item from the other side with the highest *expected incremental gross profit* at that branch, net of the customers who would have bought it anyway. The whole engine compiles to a **135-row lookup table** a POS can use tomorrow. At base assumptions it adds an estimated **~$17k of gross profit a year (P10–P90: $12k–$27k)**, 15% more than suggesting the best-seller and 37% more than a classic 10%-off combo, which gives away ~$3.9k a year in discounts for little extra uptake. The one number that matters and cannot be measured from history, **acceptance**, is measured by a 2-week logging pilot, then confirmed by a 6-week odd/even-receipt A/B test. From then on, **Stories Pair v2**, a Thompson-sampling bandit, learns acceptance from every accept and decline; in simulation across 30 hidden customer truths it earns **27% more than the fixed engine in its first year** and beats the best-seller rule and the classic combo in all 30.
+
+---
+
+## Original findings (beyond a standard analysis of this file)
+
+1. **Classic market-basket lift is the wrong tool here.** Over all orders every drink × food lift is ≤ 1, because 72% of orders are single-sided; a team stopping there concludes "no pairs". Conditioning on orders that pair reveals strong category pairs (cold drinks + sandwiches, lift 1.8). ([02](notebooks/02_pair_evidence.ipynb))
+2. **The pairing signal stops at the category.** 0 of 20 within-category tests survive correction, so the specific item can be chosen by profit at no cost in relevance. ([02](notebooks/02_pair_evidence.ipynb))
+3. **Line order inside an order carries information.** The add-on is more strongly associated with the first line (Cramér's V 0.19–0.22) than in the pooled view (0.15), which lets the engine treat the first line as the item rung first. ([02](notebooks/02_pair_evidence.ipynb))
+4. **The "discounts sell more food" pattern is a counting artifact** of bigger orders (34% vs 25% naive; 25.1% vs 25.7% when only the first drink's discount is compared). ([01](notebooks/01_eda_attach_gap.ipynb))
+5. **Loyalty IDs carry no personal preference** (repeat-choice rate equals chance, 94% of IDs seen at several branches), so personalisation is not worth its privacy cost on this data. ([02](notebooks/02_pair_evidence.ipynb))
+6. **A one-line baseline matches machine learning** for predicting whether an order pairs (June AUC 0.597 vs 0.593 vs 0.587), so the deployed model is the simple one. ([03](notebooks/03_receptiveness_model.ipynb))
+7. **Branch costs change the right suggestion:** Garden's 1.43× unit costs flip 7 of its 45 suggestions. ([04](notebooks/04_engine_and_pricing.ipynb), [05](notebooks/05_value_and_pilot.ipynb))
 
 ---
 
@@ -19,13 +31,13 @@
 | # | Finding | Evidence | Notebook |
 |---|---|---|---|
 | 1 | 72% of orders contain only one side of the pair | 13,865 drink-only + 10,459 food-only of 33,887 | [00](notebooks/00_data_contract.ipynb) |
-| 2 | Whether an order pairs depends on **what is rung first**, not on branch, hour, weekday, order type or loyalty | χ² Cramér's V 0.08–0.18 for first-item category vs ≤ 0.03 for every context variable | [01](notebooks/01_eda_attach_gap.ipynb) |
-| 3 | **Which** category is added depends strongly on the first item's category | χ² p < 1e-100, V 0.19–0.22 by direction | [01](notebooks/01_eda_attach_gap.ipynb), [02](notebooks/02_pair_evidence.ipynb) |
+| 2 | Whether an order pairs varies with **what is rung first**, not with branch, hour, weekday, order type or loyalty | χ² Cramér's V 0.08–0.18 for first-item category vs ≤ 0.03 for every context variable | [01](notebooks/01_eda_attach_gap.ipynb) |
+| 3 | **Which** category is added varies strongly with the first item's category | χ² p < 1e-100, V 0.19–0.22 by direction | [01](notebooks/01_eda_attach_gap.ipynb), [02](notebooks/02_pair_evidence.ipynb) |
 | 4 | Classic market basket finds **no** significant product pair; every category lift over all orders is ≤ 1 | 0 of 506 product pairs at BH q < 0.05 | [02](notebooks/02_pair_evidence.ipynb) |
 | 5 | Inside a category, the specific product is **independent** of the drink | 0 of 20 within-category tests survive Bonferroni | [02](notebooks/02_pair_evidence.ipynb) |
 | 6 | Loyalty IDs carry **no personal preference** | Repeat-choice rate = chance (z = −0.85); 94% of IDs seen at 2+ branches | [02](notebooks/02_pair_evidence.ipynb) |
 | 7 | A simple rate-by-first-category baseline **ties** logistic regression and **beats** gradient boosting on unseen June orders | June AUC 0.597 vs 0.593 vs 0.587; bootstrap CIs include or favour the baseline | [03](notebooks/03_receptiveness_model.ipynb) |
-| 8 | Discounts did not create pairs | Naive view 34% vs 25% is a counting artifact; first drink discounted vs not: 25.1% vs 25.7%, p = 0.65 | [01](notebooks/01_eda_attach_gap.ipynb) |
+| 8 | Discounted orders did not pair more (association, not a test) | Naive view 34% vs 25% is a counting artifact; first drink discounted vs not: 25.1% vs 25.7%, p = 0.65 | [01](notebooks/01_eda_attach_gap.ipynb) |
 | 9 | Garden pays **1.43×** Harbour's unit cost on all 45 products while pricing 5% lower | Ratio 1.426–1.439 on every product, incl. bottled water | [01](notebooks/01_eda_attach_gap.ipynb) |
 
 ## The engine
@@ -50,7 +62,7 @@ Guardrails (editable in [`config/guardrails.json`](config/guardrails.json)): dis
 
 What it does in practice ([04](notebooks/04_engine_and_pricing.ipynb)):
 
-- **Never discounts at base assumptions.** Discounts start to pay only if 10% off lifts acceptance by about a quarter or more; Stories' data shows no lift at all.
+- **Never discounts at base assumptions.** Discounts start to pay only if 10% off lifts acceptance by about a quarter or more; in Stories' data, discounted drinks were not associated with any more pairing.
 - **Branch-aware.** At Garden, iced coffees and cold drinks are paired with an Egg Sandwich; at Harbour and Uptown, with a Chicken Pesto Sandwich, because that sandwich earns $3.36 a unit at Garden vs $6.12 at Harbour.
 - **Day-one deployable.** The chosen models depend only on branch and first item, so [`outputs/playbook.csv`](outputs/playbook.csv) (135 rows) *is* the engine. Refresh monthly.
 
@@ -71,6 +83,43 @@ Engine trained on Jan–May, replayed on all 6,906 June orders, scaled to a year
 - These are **gross-profit** figures: they exclude staff time, waste and POS integration cost.
 
 ![Policy comparison](outputs/figures/05_policy_comparison.png)
+
+## Assumptions (kept separate from the facts above)
+
+Every value figure rests on these. They live in [`config/assumptions.json`](config/assumptions.json); notebook [05](notebooks/05_value_and_pilot.ipynb) varies each one.
+
+| Assumption | Base (range) | Why this value | Effect on the answer |
+|---|---|---|---|
+| Acceptance of an average-appeal suggestion by people who would not have added anything | 6% (3–12%) | Not measurable: Stories has never logged suggestions | **Largest.** Each point ≈ $2,650 a year; 3% → $8.9k, 12% → $33.1k |
+| Acceptance ∝ how often an item is chosen organically | – | Popular items are easier to accept; replaced by learned rates in v2 | v2 simulation lets it be wrong by ±60% per item |
+| Extra acceptance per 10% off | +10% (0–50%) | Discounted drinks were not associated with more pairing | Decides whether discounts are used; flips at ~+25% |
+| Organic buyers who switch to the suggestion | 10% (0–25%) | Not measurable without logs | $16.3k–$18.7k a year |
+| Share of orders where staff make the suggestion | 80% (50–100%) | Compliance in a busy shop | Scales value: $10.5k–$21.0k |
+| The first line of an order is the item rung first | – | Export has no ring order; supported by finding 3 | If wrong, the engine still uses the right category pairs; only the "who pairs anyway" rates shift |
+| Staff time and wage | 5 s per suggestion, $4/hour (3–8 s, $2.5–6) | Placeholder; Stories should use its own | $114–$729 a year |
+
+## Costs and tradeoffs ([05](notebooks/05_value_and_pilot.ipynb), section 7)
+
+| Cost | Estimate | Note |
+|---|---:|---|
+| Staff time at the till | **~$300 / yr** (76 hours) | 54,700 suggestions × 5 s × $4/hour; $114–$729 across the ranges |
+| Net gain after staff time | **~$16,500 / yr** | Base assumptions, gross profit |
+| POS integration (one-off, unknown) | pays back in **0.7 / 2.2 / 3.6 / 7.3 months** | for $1k / $3k / $5k / $10k |
+| Discounts handed out | $0 | vs $3,858 / yr for a classic 10% combo |
+
+Tradeoffs not priced: customer annoyance (mitigated: one suggestion per order, none on a complete pair, no repeat after a decline, staff may skip), demand concentrating on a few items (stock and waste are not in the data), and staff compliance.
+
+## What would change the recommendation
+
+| Recommendation | Changes if | How we will know |
+|---|---|---|
+| Make suggestions at all | Never on staff time alone: a suggestion costs ~$0.006 of staff time and the engine only makes ones worth ≥ $0.05 | Built into the engine |
+| Roll out and pay for POS integration | Acceptance below **2.0%** (needed to clear staff time plus a $5k integration in year one, with no switching benefit) | Pilot step 1 |
+| No discounts on add-ons | 10% off lifts acceptance by **~25% or more** | One-branch test after step 2; v2 learns it automatically |
+| Different suggestions at Garden | Garden's unit costs fall to Harbour's: **7 of 45** Garden suggestions change | Stories' supplier and recipe records |
+| Six-week A/B test is long enough | True effect under ~$0.18 per order: extend to 8–10 weeks | Pilot step 1 |
+
+**Missing information** that would sharpen the answer: suggestion and acceptance logs (none exist yet), POS ring order, labour cost per hour, waste and stock levels, POS integration cost, customer complaints, and the reason for Garden's 1.43× unit costs.
 
 ## Stories Pair v2: the engine that learns ([07](notebooks/07_learning_engine.ipynb))
 
@@ -109,7 +158,7 @@ v2 pays a short exploration cost (51% of the oracle's profit in week 1 vs 64% fo
 | Product-level market basket / association rules | No significant pairs; on June data it is no better than plain popularity ([02](notebooks/02_pair_evidence.ipynb)) |
 | Customer-level personalisation | Loyalty IDs show no personal preference and behave like a shared pool ([02](notebooks/02_pair_evidence.ipynb)) |
 | Gradient boosting / context-heavy ML for "will they pair" | Ties or loses to a one-line baseline on unseen months ([03](notebooks/03_receptiveness_model.ipynb)) |
-| Blanket combo discounts | Pays customers who would buy anyway; no discount effect in the data ([01](notebooks/01_eda_attach_gap.ipynb), [05](notebooks/05_value_and_pilot.ipynb)) |
+| Blanket combo discounts | Costs more margin than the small extra uptake it buys (about a third of the discount goes to people who would have bought anyway); no association between discounts and pairing in the data ([01](notebooks/01_eda_attach_gap.ipynb), [05](notebooks/05_value_and_pilot.ipynb)) |
 | Merging receipts with the same branch + second | 30 collisions vs ~21 expected by chance ([00](notebooks/00_data_contract.ipynb)) |
 | "Breakfast only before noon" rule | 56% of breakfast items sell after 3 pm |
 
@@ -121,6 +170,23 @@ v2 pays a short exploration cost (51% of the oracle's profit in week 1 vs 64% fo
 - **Six months, not a year.** Pairing rates are flat month to month (25–27% drink-first, notebook 01), but full-year seasonality cannot be checked; order volume grows each month, so we annualise from the six-month average rather than from June.
 - **Gross profit, not net.** Labour, waste and integration costs are not in the data.
 - **The Garden cost gap is unexplained** (supplier terms, recipe, waste or accounting allocation). Bringing Garden to Harbour-level unit costs would be worth up to ~$32k a year on its own, and would raise the value of every suggestion made there.
+
+## How this repository answers the brief
+
+| The brief asks | Where |
+|---|---|
+| A business problem that matters, with a clear action | Conclusion; [04](notebooks/04_engine_and_pricing.ipynb) playbook |
+| Challenge the first explanation; alternative causes and decisions | Original findings 1, 4; [01](notebooks/01_eda_attach_gap.ipynb) §4; rejected approaches below |
+| Evidence and data-quality checks | [00](notebooks/00_data_contract.ipynb) data contract; facts table with tests |
+| Business value, costs, tradeoffs | Value, costs and tradeoffs sections; [05](notebooks/05_value_and_pilot.ipynb) |
+| Which assumptions could change the action | "What would change the recommendation"; assumptions table |
+| Model vs simple baseline, tested on unseen data | [03](notebooks/03_receptiveness_model.ipynb) (train Jan–Apr, select May, test June); [02](notebooks/02_pair_evidence.ipynb) benchmark |
+| Weak areas, uncertainty, failures, missing information | Weak spots; missing information; Monte Carlo in [05](notebooks/05_value_and_pilot.ipynb) |
+| A practical test before wider use | Pilot section; power analysis in [05](notebooks/05_value_and_pilot.ipynb) |
+| No correlation presented as cause | Associations are labelled as such; the only causal claim we plan to make comes from the odd/even receipt test |
+| Measured results separate from estimates | Facts table vs value section; measured/estimated table in [05](notebooks/05_value_and_pilot.ipynb) and the [report](reports/Stories_Pair_Report.pdf) |
+| Important choices and rejected approaches | Rejected approaches table; model selection rule in [03](notebooks/03_receptiveness_model.ipynb) |
+| Team names, public repo, easy-to-inspect evidence | Top of this page; notebooks committed with outputs |
 
 ## Repository
 

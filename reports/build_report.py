@@ -186,7 +186,7 @@ def build():
         "do pair, the <i>category</i> of the add-on is strongly predictable from the first item: a matcha or tea rung first is "
         "followed by bakery 78% of the time; a sandwich or meal by a cold drink 41% of the time (cold drinks are 18% of drink lines).",
         "<b>What it does not support.</b> Product-level pairs, personal preferences behind loyalty IDs, and context-heavy "
-        "machine learning all fail held-out tests. Discounts did not change baskets.",
+        "machine learning all fail held-out tests. Discounted drinks were not associated with more pairing (an observational result).",
         f"<b>Value.</b> At base assumptions Stories Pair adds about {money(v1)} of gross profit a year (P10–P90 "
         f"{money(p10)}–{money(p90)}), 15% more than suggesting the best-seller and 37% more than a classic 10% combo, which would "
         f"also hand out {money(combo_disc)} a year in discounts.",
@@ -209,8 +209,8 @@ def build():
           P("We tested merging receipts that share a branch and the exact second (a group paying separately). There are 30 "
             "such collisions, close to the ~21 expected by pure chance, and the same customer appears twice at a branch on "
             "the same day in under 1% of customer-days. We keep the Transaction ID as the order. We treat the first line of "
-            "an order as the item rung first; the export does not record ring order, but section 2 shows the add-on depends "
-            "on the first line more strongly than the pooled view, which is what an anchor item would produce."),
+            "an order as the item rung first; the export does not record ring order, but section 2 shows the add-on is associated "
+            "more strongly with the first line than in the pooled view, which is what an anchor item would produce."),
           P("From the till's point of view, when a drink is rung first only 25.6% of orders go on to include food; when a "
             "food is rung first, 31.4% go on to include a drink. The remaining 69–74% are the audience for a suggestion.")]
     s += [PageBreak()]
@@ -220,7 +220,7 @@ def build():
     s += [P("<b>Whether</b> an order pairs barely moves with branch, hour, weekday, order type or loyalty (Cramér's V ≤ 0.03); "
             "it moves with what is rung first (V 0.08–0.18). Rates are flat month to month (25–27% drink-first).")]
     s += [fig("01_paired_rate_by_first_category", "Figure 2. Share of orders that end up paired, by the first item's category (95% CI).", max_h=78 * mm)]
-    s += [P("<b>Which</b> category is added depends strongly on the first item. Daypart, branch and order type are "
+    s += [P("<b>Which</b> category is added varies strongly with the first item. Daypart, branch and order type are "
             "statistically significant but weak.")]
     s += [fig("01_what_gets_added", "Figure 3. Among orders that paired: the category added, by the first item's category, in each direction.", max_h=72 * mm)]
     s += [P("Below the category, nothing", "h2"),
@@ -307,6 +307,38 @@ def build():
     s += [fig("05_uncertainty", f"Figure 8. Varying every assumption at once: P10 {money(p10)}, median {money(p50)}, P90 {money(p90)}; no draw loses money. Acceptance is the dominant driver.", max_h=62 * mm)]
     s += [PageBreak()]
 
+    # ---------------- 6b. Costs, assumptions, decision rules ----------------
+    costs = pd.read_csv(TAB / "05_costs.csv")
+    flips = pd.read_csv(TAB / "05_decision_flips.csv")
+    base_c = costs[costs["staff-cost case"] == "base"].iloc[0]
+    s += [P("5b · COSTS AND DECISIONS", "eyebrow"), P("What it costs, and what would change our advice", "h1")]
+    s += [P(f"Staff time is the only running cost we can estimate: about {base_c['staff hours / yr']:.0f} hours a year "
+            f"({money(base_c['staff cost / yr'])} at an assumed $4 an hour and 5 seconds a suggestion; "
+            f"{money(costs['staff cost / yr'].min())}–{money(costs['staff cost / yr'].max())} across the ranges), leaving about "
+            f"{money(base_c['net gain / yr (base acceptance)'])} a year of net gain. POS integration cost is unknown; at that net "
+            "gain, a $1k, $3k, $5k or $10k integration pays back in about 0.7, 2.2, 3.6 or 7.3 months.")]
+    s += [table([["Assumption", "Base (range)", "Effect on the answer"],
+                 ["Acceptance of an average suggestion", "6% (3–12%)", "Largest: each point ≈ $2,650 / yr; $8.9k at 3%, $33.1k at 12%"],
+                 ["Extra acceptance per 10% off", "+10% (0–50%)", "Decides whether discounts are used; flips at ~+25%"],
+                 ["Organic buyers who switch", "10% (0–25%)", "$16.3k–$18.7k / yr"],
+                 ["Orders where staff make the suggestion", "80% (50–100%)", "$10.5k–$21.0k / yr"],
+                 ["First line = item rung first", "–", "Supported by the line-order evidence; category pairs hold either way"],
+                 ["Staff time and wage", "5 s, $4/h (3–8 s, $2.5–6/h)", "$114–$729 / yr"]],
+                [W * 0.36, W * 0.22, W * 0.42])]
+    s += [P("What would change the recommendation", "h2"),
+          table([["Recommendation", "Changes if", "How we will know"]] +
+                [[r.recommendation, r["changes if"], r["how we will know"]] for _, r in flips.iterrows()],
+                [W * 0.24, W * 0.52, W * 0.24])]
+    s += [P("Tradeoffs we cannot price", "h2")]
+    s += bullets([
+        "Customer annoyance: limited by one suggestion per order, none on a complete pair, no repeat after a decline, and "
+        "staff may skip. The pilot tracks declines and complaints.",
+        "Demand concentrates on a few items (Butter Croissant, Egg Sandwich, Iced Latte); stock and waste are not in the data.",
+        "Missing information: suggestion logs, POS ring order, labour cost, waste and stock, integration cost, complaints, "
+        "and the reason for Garden's unit costs.",
+    ])
+    s += [PageBreak()]
+
     # ---------------- 7. Learning engine ----------------
     s += [P("6 · STORIES PAIR v2", "eyebrow"), P("An engine that learns at the till", "h1")]
     s += [P("v2 replaces the acceptance assumption with a Thompson-sampling bandit. Each arm (first-item category, suggested "
@@ -364,12 +396,12 @@ def build():
     s += [P("8 · RIGOUR", "eyebrow"), P("Measured, estimated, rejected", "h1")]
     s += [table([["Statement", "Status"],
                  ["72% of orders are single-sided", "Measured"],
-                 ["Pairing depends on the first item's category, not on branch, hour or order type", "Measured (tested, held-out)"],
-                 ["Which category is added depends on the first item's category", "Measured (tested, held-out)"],
+                 ["Pairing varies with the first item's category, not with branch, hour or order type", "Measured (tested, held-out)"],
+                 ["Which category is added varies with the first item's category", "Measured (tested, held-out)"],
                  ["No product-level pairing beyond the category", "Measured (multiple-testing corrected)"],
                  ["Loyalty IDs show no personal preference", "Measured"],
                  ["Garden unit costs are 1.43× Harbour on all 45 products", "Measured"],
-                 ["A discounted first drink did not change pairing", "Measured (observational)"],
+                 ["A discounted first drink was not associated with more pairing", "Measured (observational)"],
                  ["The first line of an order is the item rung first", "Assumed (supported by evidence)"],
                  ["Acceptance 6%, switching 10%, staff compliance 80%, +10% per 10% off", "Assumed (pilot measures)"],
                  [f"~{money(v1)}/yr (P10–P90 {money(p10)}–{money(p90)})", "Estimated"],
@@ -380,7 +412,7 @@ def build():
                  ["Product-level market basket / association rules", "No significant pairs; no better than popularity on June data"],
                  ["Customer-level personalisation", "No personal preference behind loyalty IDs; privacy cost"],
                  ["Gradient boosting / context-heavy ML for Q", "Ties or loses to a one-line baseline on unseen months"],
-                 ["Blanket combo discounts", "Pays customers who would buy anyway; no discount effect in the data"],
+                 ["Blanket combo discounts", "Costs more margin than the small extra uptake it buys; no association between discounts and pairing in the data"],
                  ["Merging same-second receipts", "Collisions at chance level"],
                  ["\"Breakfast only before noon\" rule", "56% of breakfast items sell after 3 pm"]],
                 [W * 0.42, W * 0.58])]

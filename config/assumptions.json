@@ -1,19 +1,39 @@
 {
   "_note": "Inputs the data cannot measure because Stories has never logged suggestions. Each has a low / base / high value. Notebook 05 shows how the answer moves across these ranges; a pilot replaces them with measured values.",
   "base_acceptance": {
-    "low": 0.03, "base": 0.06, "high": 0.12,
+    "low": 0.03,
+    "base": 0.06,
+    "high": 0.12,
     "meaning": "Share of customers who would NOT have added an item but accept a full-price suggestion of an average-appeal item. Items customers pick more often organically get proportionally higher acceptance."
   },
   "discount_lift_per_10pct": {
-    "low": 0.0, "base": 0.10, "high": 0.50,
-    "meaning": "Relative increase in acceptance per 10% off. Base is low because, in the data, a discounted first drink did not change whether food was added (40.8% vs 40.8%)."
+    "low": 0.0,
+    "base": 0.1,
+    "high": 0.5,
+    "meaning": "Relative increase in acceptance per 10% off. Base is low because, in the data, a discounted first drink was not associated with more pairing (25.1% vs 25.7%, p = 0.65); this is observational, not a test."
   },
   "switch_rate": {
-    "low": 0.0, "base": 0.10, "high": 0.25,
+    "low": 0.0,
+    "base": 0.1,
+    "high": 0.25,
     "meaning": "Share of customers who were going to add a different item and switch to the suggested one."
   },
   "offer_rate": {
-    "low": 0.5, "base": 0.8, "high": 1.0,
+    "low": 0.5,
+    "base": 0.8,
+    "high": 1.0,
     "meaning": "Share of eligible orders where staff actually make the suggestion (till compliance)."
+  },
+  "staff_seconds_per_suggestion": {
+    "low": 3,
+    "base": 5,
+    "high": 8,
+    "meaning": "Till time each suggestion adds (saying one line and tapping accept or decline)."
+  },
+  "staff_cost_per_hour_usd": {
+    "low": 2.5,
+    "base": 4.0,
+    "high": 6.0,
+    "meaning": "Loaded hourly cost of counter staff. Not in the data; a placeholder Stories should replace with its own figure."
   }
 }

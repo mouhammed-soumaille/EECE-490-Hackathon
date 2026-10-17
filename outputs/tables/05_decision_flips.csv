@@ -1,0 +1,6 @@
+recommendation,changes if,how we will know
+Make suggestions at all,"never on staff time alone: a suggestion costs about $0.006 of staff time and the engine only makes one worth at least $0.05, so it goes quiet before it loses money",built into the engine
+Roll out and pay for POS integration,acceptance is below 2.0% (needed to clear staff time plus a $5k integration in year one; no switching benefit),pilot step 1
+No discounts on add-ons,10% off lifts acceptance by about 25% or more (the engine then starts discounting),one-branch discount test after step 2; v2 learns it automatically
+Different suggestions at Garden,Garden's unit costs fall to Harbour's level: 7 of 45 Garden suggestions would change,Stories' supplier and recipe records (not in the data)
+Six-week A/B test is long enough,the true effect is under ~$0.18 per order; then extend to 8-10 weeks,pilot step 1 acceptance estimate
