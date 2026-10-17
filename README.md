@@ -8,13 +8,13 @@
 
 ---
 
-## Conclusion in one paragraph
+## Conclusion
 
 **72% of Stories' orders are half a pair** (40.9% drink-only, 30.9% food-only). We tested what the data can actually support before building anything. Classic "people who bought X also bought Y" analysis finds nothing, but when an order *does* pair, the **category** of the add-on is strongly predictable (a matcha or tea rung first is followed by bakery 78% of the time; a sandwich or meal by a cold drink 41% of the time, vs 18% overall). Below the category level, the specific product, the customer's loyalty ID, the time of day and the branch add nothing that survives testing on unseen months, and discounted drinks were not associated with more pairing. **Stories Pair** uses exactly that: when the first item is rung, it suggests the item from the other side with the highest *expected incremental gross profit* at that branch, net of the customers who would have bought it anyway. The whole engine compiles to a **135-row lookup table** a POS can use tomorrow. At base assumptions it adds an estimated **~$17k of gross profit a year (~$16.5k after staff time; P10–P90: $12k–$27k)**, 15% more than suggesting the best-seller and 37% more than a classic 10%-off combo, which gives away ~$3.9k a year in discounts for little extra uptake. The one number that matters and cannot be measured from history, **acceptance**, is measured by a 2-week logging pilot, then confirmed by a 6-week odd/even-receipt A/B test. From then on, **Stories Pair v2**, a Thompson-sampling bandit, learns acceptance from every accept and decline; in simulation across 30 hidden customer truths it earns **27% more than the fixed engine in its first year** and beats the best-seller rule and the classic combo in all 30.
 
 ---
 
-## Original findings (beyond a standard analysis of this file)
+## Original findings
 
 1. **Classic market-basket lift is the wrong tool here.** Over all orders every drink × food lift is ≤ 1, because 72% of orders are single-sided; a team stopping there concludes "no pairs". Conditioning on orders that pair reveals strong category pairs (cold drinks + sandwiches, lift 1.8). ([02](notebooks/02_pair_evidence.ipynb))
 2. **The pairing signal stops at the category.** 0 of 20 within-category tests survive correction, so the specific item can be chosen by profit at no cost in relevance. ([02](notebooks/02_pair_evidence.ipynb))
@@ -28,7 +28,7 @@
 
 ---
 
-## What we measured (facts from the data)
+## What we measured
 
 | # | Finding | Evidence | Notebook |
 |---|---|---|---|
@@ -69,7 +69,7 @@ What it does in practice ([04](notebooks/04_engine_and_pricing.ipynb)):
 - **Branch-aware.** At Garden, iced coffees and cold drinks are paired with an Egg Sandwich; at Harbour and Uptown, with a Chicken Pesto Sandwich, because that sandwich earns $3.36 a unit at Garden vs $6.12 at Harbour.
 - **Day-one deployable.** The chosen models depend only on branch and first item, so [`outputs/playbook.csv`](outputs/playbook.csv) (135 rows) *is* the engine. Refresh monthly.
 
-## What it is worth (estimates, not measurements)
+## What it is worth (estimates)
 
 Engine trained on Jan–May, replayed on all 6,906 June orders, scaled to a year ([05](notebooks/05_value_and_pilot.ipynb)):
 
@@ -87,7 +87,7 @@ Engine trained on Jan–May, replayed on all 6,906 June orders, scaled to a year
 
 ![Policy comparison](outputs/figures/05_policy_comparison.png)
 
-## Assumptions (kept separate from the facts above)
+## Assumptions
 
 Every value figure rests on these. They live in [`config/assumptions.json`](config/assumptions.json); notebook [05](notebooks/05_value_and_pilot.ipynb) varies each one.
 
@@ -173,23 +173,6 @@ v2 pays a short exploration cost (51% of the oracle's profit in week 1 vs 64% fo
 - **Six months, not a year.** Pairing rates are flat month to month (25–27% drink-first, notebook 01), but full-year seasonality cannot be checked; order volume grows each month, so we annualise from the six-month average rather than from June.
 - **Gross profit, not net.** Labour, waste and integration costs are not in the data.
 - **The Garden cost gap is unexplained** (supplier terms, recipe, waste or accounting allocation). Bringing Garden to Harbour-level unit costs would be worth up to ~$32k a year on its own, and would raise the value of every suggestion made there.
-
-## How this repository answers the brief
-
-| The brief asks | Where |
-|---|---|
-| A business problem that matters, with a clear action | Conclusion; [04](notebooks/04_engine_and_pricing.ipynb) playbook |
-| Challenge the first explanation; alternative causes and decisions | Original findings 1, 4; [01](notebooks/01_eda_attach_gap.ipynb) §4; rejected approaches below |
-| Evidence and data-quality checks | [00](notebooks/00_data_contract.ipynb) data contract; facts table with tests |
-| Business value, costs, tradeoffs | Value, costs and tradeoffs sections; [05](notebooks/05_value_and_pilot.ipynb) |
-| Which assumptions could change the action | "What would change the recommendation"; assumptions table |
-| Model vs simple baseline, tested on unseen data | [03](notebooks/03_receptiveness_model.ipynb) (train Jan–Apr, select May, test June); [02](notebooks/02_pair_evidence.ipynb) benchmark |
-| Weak areas, uncertainty, failures, missing information | Weak spots; missing information; Monte Carlo in [05](notebooks/05_value_and_pilot.ipynb) |
-| A practical test before wider use | Pilot section; power analysis in [05](notebooks/05_value_and_pilot.ipynb) |
-| No correlation presented as cause | Associations are labelled as such; the only causal claim we plan to make comes from the odd/even receipt test |
-| Measured results separate from estimates | Facts table vs value section; measured/estimated table in [05](notebooks/05_value_and_pilot.ipynb) and the [report](reports/Stories_Pair_Report.pdf) |
-| Important choices and rejected approaches | Rejected approaches table; model selection rule in [03](notebooks/03_receptiveness_model.ipynb) |
-| Team names, public repo, easy-to-inspect evidence | Top of this page; notebooks committed with outputs |
 
 ## Repository
 
