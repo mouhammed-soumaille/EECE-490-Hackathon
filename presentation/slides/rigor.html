@@ -1,0 +1,29 @@
+<section id="rigor" data-transition="fade" style="background:#f6f5f1;color:#1c211a;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#3f6b2f">Why you can trust the numbers</p>
+<h2 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:72px;font-weight:800;line-height:1.1;letter-spacing:-1px">Tested on months the models never saw</h2>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:64px">
+<div style="display:flex;flex-direction:column;gap:20px">
+<h3 style="font-size:36px;font-weight:600">Simple won, so we kept it simple</h3>
+<table style="font-family:'IBM Plex Sans', Arial, sans-serif;font-size:28px;color:#1c211a">
+<tr><th style="width:70%;text-align:left">Will this order pair? (June)</th><th style="width:30%;text-align:right">AUC</th></tr>
+<tr style="background:#e6eedf"><td><b>Rate by first-item category</b></td><td style="text-align:right"><b>0.597</b></td></tr>
+<tr><td>Logistic regression</td><td style="text-align:right">0.593</td></tr>
+<tr><td>Gradient boosting</td><td style="text-align:right">0.587</td></tr>
+</table>
+<p style="font-size:26px;line-height:1.4;color:#4a4f44">Train Jan–Apr, choose on May, report June. Complexity that doesn’t pay is cost.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px">
+<h3 style="font-size:36px;font-weight:600">Measured vs estimated, kept apart</h3>
+<ul style="font-size:28px;line-height:1.5;color:#1c211a">
+<li><b>Measured:</b> 72% single-sided orders, category pairs, 1.43× Garden costs, no discount effect</li>
+<li><b>Assumed:</b> how often customers accept, 6% base</li>
+<li><b>Estimated:</b> $17k a year, $12k–$27k range</li>
+<li><b>Measured next:</b> acceptance, in the pilot</li>
+</ul>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#7a7d70">Paired bootstrap on June: logistic regression vs baseline −0.004 AUC (95% CI −0.009 to +0.001) · notebooks 02–03</p>
+<aside>The judging brief rewards evidence over complexity, and so should an investor. We trained on January to April, chose on May and only then looked at June. A one-line baseline tied logistic regression and beat gradient boosting, so the product uses the baseline. Every claim is labelled measured, assumed or estimated.</aside>
+</section>

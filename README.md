@@ -4,11 +4,13 @@
 **EECE 490 Hackathon · Stories Coffee transaction data (Jan–Jun 2026, 3 branches, 33,887 orders)**
 **Team:** ‹Member 1 full name› · ‹Member 2 full name›
 
+**Start here:** 📄 [Project report (PDF)](reports/Stories_Pair_Report.pdf) · 🧾 [Till app](app/index.html) (download and open in any browser) · 📓 [Notebooks](notebooks) · 🎤 [Pitch deck slides](presentation)
+
 ---
 
 ## Conclusion in one paragraph
 
-**72% of Stories' orders are half a pair** (40.9% drink-only, 30.9% food-only). We tested what the data can actually support before building anything. Classic "people who bought X also bought Y" analysis finds nothing, but when an order *does* pair, the **category** of the add-on is strongly predictable (a matcha or tea rung first is followed by bakery 78% of the time; a sandwich or meal by a cold drink 41% of the time, vs 18% overall). Below the category level, the specific product, the customer's loyalty ID, the time of day and the branch add nothing that survives testing on unseen months, and discounts did not change baskets. **Stories Pair** uses exactly that: when the first item is rung, it suggests the item from the other side with the highest *expected incremental gross profit* at that branch, net of the customers who would have bought it anyway. The whole engine compiles to a **135-row lookup table** a POS can use tomorrow. At base assumptions it adds an estimated **~$17k of gross profit a year (P10–P90: $12k–$27k)**, 15% more than suggesting the best-seller and 37% more than a classic 10%-off combo, which would also hand ~$3.9k a year in discounts to customers who would have paid full price. The one number that matters and cannot be measured from history, **acceptance**, is measured by a 2-week logging pilot, then confirmed by a 6-week odd/even-receipt A/B test.
+**72% of Stories' orders are half a pair** (40.9% drink-only, 30.9% food-only). We tested what the data can actually support before building anything. Classic "people who bought X also bought Y" analysis finds nothing, but when an order *does* pair, the **category** of the add-on is strongly predictable (a matcha or tea rung first is followed by bakery 78% of the time; a sandwich or meal by a cold drink 41% of the time, vs 18% overall). Below the category level, the specific product, the customer's loyalty ID, the time of day and the branch add nothing that survives testing on unseen months, and discounts did not change baskets. **Stories Pair** uses exactly that: when the first item is rung, it suggests the item from the other side with the highest *expected incremental gross profit* at that branch, net of the customers who would have bought it anyway. The whole engine compiles to a **135-row lookup table** a POS can use tomorrow. At base assumptions it adds an estimated **~$17k of gross profit a year (P10–P90: $12k–$27k)**, 15% more than suggesting the best-seller and 37% more than a classic 10%-off combo, which would also hand ~$3.9k a year in discounts to customers who would have paid full price. The one number that matters and cannot be measured from history, **acceptance**, is measured by a 2-week logging pilot, then confirmed by a 6-week odd/even-receipt A/B test. From then on, **Stories Pair v2**, a Thompson-sampling bandit, learns acceptance from every accept and decline; in simulation across 30 hidden customer truths it earns **27% more than the fixed engine in its first year** and beats the best-seller rule and the classic combo in all 30.
 
 ---
 
@@ -70,6 +72,30 @@ Engine trained on Jan–May, replayed on all 6,906 June orders, scaled to a year
 
 ![Policy comparison](outputs/figures/05_policy_comparison.png)
 
+## Stories Pair v2: the engine that learns ([07](notebooks/07_learning_engine.ipynb))
+
+v1 has to *assume* how often customers accept a suggestion. v2 learns it: every (first-item category, suggested item, discount) arm keeps a Beta belief about its take rate, warm-started at v1's estimate; for each order the engine samples from every allowed arm's belief, values the draw with that branch's prices and costs, and suggests the best draw (Thompson sampling). Each night the day's accept/decline log updates the beliefs. No retraining, no GPU, no customer data.
+
+Tested against 30 simulated truths (acceptance, discount effect and switching drawn from the assumption ranges, plus ±60% item-level deviations from v1's rule), one year of orders resampled from real April–June orders:
+
+| Policy | First-year extra gross profit (mean) | P10–P90 | v2 wins in |
+|---|---:|---:|---:|
+| Oracle (knows the truth) | $33,387 | $22.8k–$42.7k | – |
+| **Stories Pair v2 (learning)** | **$27,379** | $17.6k–$38.5k | – |
+| Stories Pair v1 (assumption only) | $21,478 | $15.0k–$33.6k | 87% of truths |
+| Suggest the best-seller | $17,938 | $10.8k–$27.5k | 100% |
+| Classic 10% combo | $17,425 | $10.4k–$26.4k | 100% |
+
+v2 pays a short exploration cost (51% of the oracle's profit in week 1 vs 64% for v1), overtakes v1 by week 3 and reaches 87% of the oracle by week 52; its beliefs converge on the true take rates, and its discount use tracks the true discount effect (r = 0.72) without being told. These figures span the whole assumption range, so compare them within this table, not with the base case above. **It is a simulation built on our model's structure; the pilot provides the real numbers.**
+
+![Learning curve](outputs/figures/07_learning_curve.png)
+
+## The product
+
+- **Till app** ([`app/index.html`](app/index.html), one self-contained file, no server): ring the first item, see the suggested pairing with its price and a one-line script, tap accept or decline. A staff panel shows the options the engine scored, the chance the order pairs anyway, and the engine's live belief curve. A second tab runs a four-week simulated service of v2 vs v1 vs a classic combo; a third shows the business case. Its JavaScript engine reproduces the Python engine's decisions exactly. Rebuild with `python app/build_app.py`.
+- **Colab demo** ([06](notebooks/06_pos_demo.ipynb)): the same flow as a Gradio app with a public share link.
+- **Integration path:** day one, load [`outputs/playbook.csv`](outputs/playbook.csv) into the POS; during the pilot, log accept/decline; then a nightly job updates two counts per arm and republishes the table.
+
 ## The pilot Stories can run next month
 
 1. **Acceptance logging, 2 weeks, all branches.** Staff make the playbook suggestion and tap accepted/declined (the demo in [06](notebooks/06_pos_demo.ipynb) shows the flow). ~2,200 suggestions estimate acceptance to ±1 point. If acceptance is below ~2%, stop.
@@ -107,7 +133,11 @@ Engine trained on Jan–May, replayed on all 6,906 June orders, scaled to a year
 | [`notebooks/04_engine_and_pricing.ipynb`](notebooks/04_engine_and_pricing.ipynb) | The engine, discount logic, playbook |
 | [`notebooks/05_value_and_pilot.ipynb`](notebooks/05_value_and_pilot.ipynb) | Value, sensitivity, pilot design |
 | [`notebooks/06_pos_demo.ipynb`](notebooks/06_pos_demo.ipynb) | Till prototype (Gradio app in Colab) |
-| [`src/storiespair/`](src/storiespair) | Shared code: data, evidence, models, engine, simulate, viz |
+| [`notebooks/07_learning_engine.ipynb`](notebooks/07_learning_engine.ipynb) | v2: Thompson-sampling bandit, simulation vs fixed rules and oracle |
+| [`app/`](app) | Standalone till app (`index.html`) and its build script |
+| [`reports/`](reports) | Project report PDF and the script that builds it |
+| [`presentation/`](presentation) | Pitch deck slides (HTML source) |
+| [`src/storiespair/`](src/storiespair) | Shared code: data, evidence, models, engine, bandit, simulate, viz |
 | [`config/`](config) | Assumptions, guardrails, compatibility: business-editable, no code |
 | [`outputs/`](outputs) | Figures, tables and the playbook |
 
@@ -120,5 +150,6 @@ Engine trained on Jan–May, replayed on all 6,906 June orders, scaled to a year
 [![04](https://img.shields.io/badge/Colab-04_engine-F9AB00?logo=googlecolab)](https://colab.research.google.com/github/mouhammed-soumaille/EECE-490-Hackathon/blob/main/notebooks/04_engine_and_pricing.ipynb)
 [![05](https://img.shields.io/badge/Colab-05_value-F9AB00?logo=googlecolab)](https://colab.research.google.com/github/mouhammed-soumaille/EECE-490-Hackathon/blob/main/notebooks/05_value_and_pilot.ipynb)
 [![06](https://img.shields.io/badge/Colab-06_demo-F9AB00?logo=googlecolab)](https://colab.research.google.com/github/mouhammed-soumaille/EECE-490-Hackathon/blob/main/notebooks/06_pos_demo.ipynb)
+[![07](https://img.shields.io/badge/Colab-07_learning-F9AB00?logo=googlecolab)](https://colab.research.google.com/github/mouhammed-soumaille/EECE-490-Hackathon/blob/main/notebooks/07_learning_engine.ipynb)
 
 Every notebook is committed with its outputs, so results can be inspected on GitHub without running anything.
