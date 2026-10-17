@@ -22,7 +22,7 @@ FIG = ROOT / "outputs" / "figures"
 TAB = ROOT / "outputs" / "tables"
 OUT = ROOT / "reports" / "Stories_Pair_Report.pdf"
 
-TEAM = "‹Member 1 full name› · ‹Member 2 full name›"
+TEAM = "Mouhammed Soumaille · Wassim Shams"
 
 # ---------- fonts and styles ----------
 F = "/usr/share/fonts/truetype"
