@@ -2,7 +2,7 @@
 ### Turning half-orders into profitable pairs, one till suggestion at a time
 
 **EECE 490 Hackathon · Stories Coffee transaction data (Jan–Jun 2026, 3 branches, 33,887 orders)**
-**Team:** ‹Member 1 full name› · ‹Member 2 full name›
+**Team:** Mouhammed Soumaille · Wassim Shams
 
 **Start here:** 📄 [Project report (PDF)](reports/Stories_Pair_Report.pdf) · 🧾 [Till app](app/index.html) (download and open in any browser) · 📓 [Notebooks](notebooks) · 🎤 [Pitch deck slides](presentation)
 
